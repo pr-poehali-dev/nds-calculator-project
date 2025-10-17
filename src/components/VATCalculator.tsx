@@ -19,12 +19,11 @@ const VATCalculator = () => {
   const [okvedCode, setOkvedCode] = useState<string>('');
   const [okvedList, setOkvedList] = useState<OKVEDItem[]>([]);
   const [searchQuery, setSearchQuery] = useState<string>('');
-  const [taxSystem, setTaxSystem] = useState<'general' | 'usn' | 'eshn' | 'psn'>('general');
+  const [taxSystem, setTaxSystem] = useState<'general' | 'usn' | 'psn'>('general');
   const [vatRate2025, setVatRate2025] = useState<number>(20);
   const [vatRate2026, setVatRate2026] = useState<number>(22);
   const [usnRevenue, setUsnRevenue] = useState<number>(100);
   const [generalRevenue, setGeneralRevenue] = useState<number>(10);
-  const [eshnRevenue, setEshnRevenue] = useState<number>(30);
   const [psnRevenue, setPsnRevenue] = useState<number>(30);
   const [isExempt2025, setIsExempt2025] = useState<boolean>(false);
   const [isExempt2026, setIsExempt2026] = useState<boolean>(false);
@@ -88,16 +87,6 @@ const VATCalculator = () => {
         setIsExempt2026(false);
         setVatRate2026(0);
       }
-    } else if (taxSystem === 'eshn') {
-      if (eshnRevenue <= 60) {
-        setIsExempt2025(true);
-        setIsExempt2026(true);
-        setVatRate2025(0);
-        setVatRate2026(0);
-      } else {
-        setIsExempt2025(false);
-        setIsExempt2026(false);
-      }
     } else if (taxSystem === 'general') {
       if (generalRevenue <= 2) {
         setIsExempt2025(true);
@@ -125,7 +114,7 @@ const VATCalculator = () => {
         setIsExempt2026(false);
       }
     }
-  }, [taxSystem, usnRevenue, generalRevenue, eshnRevenue, psnRevenue]);
+  }, [taxSystem, usnRevenue, generalRevenue, psnRevenue]);
 
   const filteredOKVED = okvedList.filter(item =>
     item.code.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -214,8 +203,8 @@ const VATCalculator = () => {
               </div>
 
               <TooltipProvider>
-                <Tabs value={taxSystem} onValueChange={(v) => setTaxSystem(v as 'general' | 'usn' | 'eshn' | 'psn')}>
-                  <TabsList className="grid w-full grid-cols-4">
+                <Tabs value={taxSystem} onValueChange={(v) => setTaxSystem(v as 'general' | 'usn' | 'psn')}>
+                  <TabsList className="grid w-full grid-cols-3">
                     <Tooltip>
                       <TooltipTrigger asChild>
                         <TabsTrigger value="general">ОСН</TabsTrigger>
@@ -233,16 +222,6 @@ const VATCalculator = () => {
                       <TooltipContent>
                         <p className="font-semibold">Упрощенная система налогообложения</p>
                         <p className="text-xs mt-1">Специальный режим с пониженной ставкой</p>
-                      </TooltipContent>
-                    </Tooltip>
-                    
-                    <Tooltip>
-                      <TooltipTrigger asChild>
-                        <TabsTrigger value="eshn">ЕСХН</TabsTrigger>
-                      </TooltipTrigger>
-                      <TooltipContent>
-                        <p className="font-semibold">Единый сельскохозяйственный налог</p>
-                        <p className="text-xs mt-1">Для производителей сельхозпродукции</p>
                       </TooltipContent>
                     </Tooltip>
                     
@@ -342,56 +321,6 @@ const VATCalculator = () => {
                           ? '7% - доход от 250 до 450 млн'
                           : 'Доход выше 450 млн - УСН недоступна'}
                       </p>
-                    )}
-                  </div>
-                </TabsContent>
-
-                <TabsContent value="eshn" className="space-y-4 mt-4">
-                  <div>
-                    <Label htmlFor="eshnRevenue">Годовой доход от реализации (млн ₽)</Label>
-                    <Input
-                      id="eshnRevenue"
-                      type="number"
-                      placeholder="Введите доход"
-                      value={eshnRevenue}
-                      onChange={(e) => setEshnRevenue(parseFloat(e.target.value) || 0)}
-                      className="mt-2"
-                    />
-                    {isExempt2025 && isExempt2026 ? (
-                      <div className="mt-2 p-3 bg-green-50 border border-green-200 rounded-lg">
-                        <p className="text-sm text-green-800 font-medium">✓ Возможно освобождение от НДС</p>
-                        <p className="text-xs text-green-700 mt-1">Доход не превышает 60 млн ₽. Требуется подать уведомление.</p>
-                      </div>
-                    ) : (
-                      <div className="mt-2">
-                        <Label htmlFor="eshnRate">Ставка НДС (%)</Label>
-                        <Select 
-                          value={vatRate2025.toString()} 
-                          onValueChange={(v) => {
-                            const rate = parseFloat(v);
-                            setVatRate2025(rate);
-                            if (rate === 20) {
-                              setVatRate2026(22);
-                            } else {
-                              setVatRate2026(rate);
-                            }
-                          }}
-                        >
-                          <SelectTrigger className="mt-2">
-                            <SelectValue />
-                          </SelectTrigger>
-                          <SelectContent>
-                            <SelectItem value="0">0% (Экспорт)</SelectItem>
-                            <SelectItem value="10">10% (Продовольствие)</SelectItem>
-                            <SelectItem value="20">20% (Стандартная)</SelectItem>
-                          </SelectContent>
-                        </Select>
-                        <p className="text-sm text-muted-foreground mt-2">
-                          {vatRate2025 === 20 
-                            ? 'В 2026 году ставка изменится на 22%'
-                            : 'Ставка не изменится в 2026 году'}
-                        </p>
-                      </div>
                     )}
                   </div>
                 </TabsContent>
