@@ -37,6 +37,32 @@ const OKVEDCalculator = () => {
     }
   };
 
+  const getVatRateByOKVED = (code: string, name: string): number => {
+    const lowerName = name.toLowerCase();
+    const lowerCode = code.toLowerCase();
+
+    if (lowerCode.startsWith('51') || lowerName.includes('экспорт') || lowerName.includes('международн')) {
+      return 0;
+    }
+
+    if (
+      lowerCode.startsWith('10.') ||
+      lowerCode.startsWith('11.') ||
+      lowerCode.startsWith('47.2') ||
+      lowerName.includes('продовольств') ||
+      lowerName.includes('пищев') ||
+      lowerName.includes('детск') ||
+      lowerName.includes('медицин') ||
+      lowerName.includes('лекарств') ||
+      lowerName.includes('книж') ||
+      lowerName.includes('издател')
+    ) {
+      return 10;
+    }
+
+    return 20;
+  };
+
   const getVatRate2026 = (rate2025: number) => {
     return rate2025 === 20 ? 22 : rate2025;
   };
@@ -65,6 +91,13 @@ const OKVEDCalculator = () => {
   );
   
   const selectedOKVED = okvedList.find(item => item.code === okvedCode);
+
+  useEffect(() => {
+    if (selectedOKVED && taxSystem === 'general') {
+      const suggestedRate = getVatRateByOKVED(selectedOKVED.code, selectedOKVED.name);
+      setVatRate2025(suggestedRate);
+    }
+  }, [okvedCode, selectedOKVED, taxSystem]);
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-white via-gray-50/30 to-white flex items-center justify-center p-4 sm:p-8">
