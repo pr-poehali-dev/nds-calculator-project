@@ -190,7 +190,7 @@ const OKVEDCalculator = () => {
                     </Select>
                     {vatRate2025 === 20 && (
                       <p className="text-xs text-gray-400 font-light mt-2 animate-in fade-in duration-300">
-                        В 2026 изменится на 22%
+                        В 2026 повысится до 22%
                       </p>
                     )}
                   </div>
