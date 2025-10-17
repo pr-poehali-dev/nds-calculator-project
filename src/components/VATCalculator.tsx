@@ -8,7 +8,6 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import Icon from '@/components/ui/icon';
 import { Badge } from '@/components/ui/badge';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
-import { Checkbox } from '@/components/ui/checkbox';
 
 interface OKVEDItem {
   code: string;
@@ -24,8 +23,6 @@ const VATCalculator = () => {
   const [vatRate2025, setVatRate2025] = useState<number>(20);
   const [vatRate2026, setVatRate2026] = useState<number>(22);
   const [usnRevenue, setUsnRevenue] = useState<number>(100);
-  const [generalRevenue, setGeneralRevenue] = useState<number>(10);
-  const [showGeneralRevenue, setShowGeneralRevenue] = useState<boolean>(false);
 
   const [isExempt2025, setIsExempt2025] = useState<boolean>(false);
   const [isExempt2026, setIsExempt2026] = useState<boolean>(false);
@@ -87,16 +84,8 @@ const VATCalculator = () => {
         setIsExempt2026(false);
         setVatRate2026(0);
       }
-    } else if (taxSystem === 'general') {
-      if (generalRevenue <= 2) {
-        setIsExempt2025(true);
-        setIsExempt2026(true);
-      } else {
-        setIsExempt2025(false);
-        setIsExempt2026(false);
-      }
     }
-  }, [taxSystem, usnRevenue, generalRevenue]);
+  }, [taxSystem, usnRevenue]);
 
   const filteredOKVED = okvedList.filter(item =>
     item.code.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -209,37 +198,13 @@ const VATCalculator = () => {
                   </TabsList>
                 
                 <TabsContent value="general" className="space-y-4 mt-4">
-                  <div className="flex items-center space-x-2 mb-4">
-                    <Checkbox 
-                      id="exemption"
-                      checked={showGeneralRevenue}
-                      onCheckedChange={(checked) => {
-                        setShowGeneralRevenue(checked as boolean);
-                        if (!checked) {
-                          setGeneralRevenue(10);
-                        }
-                      }}
-                    />
-                    <Label htmlFor="exemption" className="cursor-pointer">
-                      Мой доход за последние 3 месяца менее 2 млн ₽ (освобождение от НДС)
-                    </Label>
+                  <div className="p-3 bg-blue-50 border border-blue-200 rounded-lg mb-4">
+                    <p className="text-sm text-blue-800">
+                      💡 Если ваш доход за последние 3 месяца менее 2 млн ₽, вы можете получить освобождение от НДС (требуется уведомление в ФНС)
+                    </p>
                   </div>
                   
-                  {showGeneralRevenue && (
-                    <div>
-                      <Label htmlFor="generalRevenue">Выручка за 3 месяца (млн ₽)</Label>
-                      <Input
-                        id="generalRevenue"
-                        type="number"
-                        placeholder="Введите выручку"
-                        value={generalRevenue}
-                        onChange={(e) => setGeneralRevenue(parseFloat(e.target.value) || 0)}
-                        className="mt-2"
-                      />
-                    </div>
-                  )}
-                  {!showGeneralRevenue && (
-                    <div>
+                  <div>
                       <Label htmlFor="rate2025">Ставка НДС (%)</Label>
                       <Select 
                         value={vatRate2025.toString()} 
@@ -268,13 +233,6 @@ const VATCalculator = () => {
                           : 'Ставка не изменится в 2026 году'}
                       </p>
                     </div>
-                  )}
-                  {showGeneralRevenue && (isExempt2025 || isExempt2026) && (
-                    <div className="p-3 bg-green-50 border border-green-200 rounded-lg">
-                      <p className="text-sm text-green-800 font-medium">✓ Освобождение от НДС</p>
-                      <p className="text-xs text-green-700 mt-1">Выручка не превышает 2 млн ₽ за 3 месяца</p>
-                    </div>
-                  )}
                 </TabsContent>
 
                 <TabsContent value="usn" className="space-y-4 mt-4">
