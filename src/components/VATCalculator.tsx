@@ -160,10 +160,18 @@ const VATCalculator = () => {
                 
                 <TabsContent value="general" className="space-y-4 mt-4">
                   <div>
-                    <Label htmlFor="rate2025">Ставка НДС 2025 (%)</Label>
+                    <Label htmlFor="rate2025">Ставка НДС (%)</Label>
                     <Select 
                       value={vatRate2025.toString()} 
-                      onValueChange={(v) => setVatRate2025(parseFloat(v))}
+                      onValueChange={(v) => {
+                        const rate = parseFloat(v);
+                        setVatRate2025(rate);
+                        if (rate === 20) {
+                          setVatRate2026(22);
+                        } else {
+                          setVatRate2026(rate);
+                        }
+                      }}
                     >
                       <SelectTrigger className="mt-2">
                         <SelectValue />
@@ -174,6 +182,11 @@ const VATCalculator = () => {
                         <SelectItem value="20">20% (Стандартная)</SelectItem>
                       </SelectContent>
                     </Select>
+                    <p className="text-sm text-muted-foreground mt-2">
+                      {vatRate2025 === 20 
+                        ? 'В 2026 году ставка изменится на 22%'
+                        : 'Ставка не изменится в 2026 году'}
+                    </p>
                   </div>
                 </TabsContent>
 
