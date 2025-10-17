@@ -321,19 +321,6 @@ const OKVEDCalculator = () => {
                       </div>
                     </div>
 
-                    <div className="bg-blue-500/10 border border-blue-500/30 rounded-xl p-4">
-                      <p className="text-xs text-blue-400 font-semibold mb-2">
-                        ℹ️ Упрощенная система налогообложения (УСН)
-                      </p>
-                      <ul className="text-xs text-blue-300/80 space-y-1">
-                        <li>• Базовая ставка: 6%</li>
-                        <li>• Повышенная ставка: 8% (при доходе 250-450 млн или 100-130 сотрудников)</li>
-                        <li>• Лимит дохода: до 450 млн ₽/год</li>
-                        <li>• Макс. сотрудников: 130 человек</li>
-                        <li>• Только для ИП и ООО</li>
-                      </ul>
-                    </div>
-
                     {usnRevenue >= 10 && usnRevenue < 60 && (
                       <div className="bg-amber-500/10 border border-amber-500/30 rounded-xl p-4">
                         <p className="text-xs text-amber-400 font-semibold">
