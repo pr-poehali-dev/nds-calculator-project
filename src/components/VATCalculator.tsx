@@ -7,6 +7,7 @@ import { Button } from '@/components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import Icon from '@/components/ui/icon';
 import { Badge } from '@/components/ui/badge';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 
 interface OKVEDItem {
   code: string;
@@ -212,13 +213,49 @@ const VATCalculator = () => {
                 />
               </div>
 
-              <Tabs value={taxSystem} onValueChange={(v) => setTaxSystem(v as 'general' | 'usn' | 'eshn' | 'psn')}>
-                <TabsList className="grid w-full grid-cols-4">
-                  <TabsTrigger value="general">ОСН</TabsTrigger>
-                  <TabsTrigger value="usn">УСН</TabsTrigger>
-                  <TabsTrigger value="eshn">ЕСХН</TabsTrigger>
-                  <TabsTrigger value="psn">ПСН</TabsTrigger>
-                </TabsList>
+              <TooltipProvider>
+                <Tabs value={taxSystem} onValueChange={(v) => setTaxSystem(v as 'general' | 'usn' | 'eshn' | 'psn')}>
+                  <TabsList className="grid w-full grid-cols-4">
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <TabsTrigger value="general">ОСН</TabsTrigger>
+                      </TooltipTrigger>
+                      <TooltipContent>
+                        <p className="font-semibold">Общая система налогообложения</p>
+                        <p className="text-xs mt-1">Стандартный режим для всех организаций и ИП</p>
+                      </TooltipContent>
+                    </Tooltip>
+                    
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <TabsTrigger value="usn">УСН</TabsTrigger>
+                      </TooltipTrigger>
+                      <TooltipContent>
+                        <p className="font-semibold">Упрощенная система налогообложения</p>
+                        <p className="text-xs mt-1">Специальный режим с пониженной ставкой</p>
+                      </TooltipContent>
+                    </Tooltip>
+                    
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <TabsTrigger value="eshn">ЕСХН</TabsTrigger>
+                      </TooltipTrigger>
+                      <TooltipContent>
+                        <p className="font-semibold">Единый сельскохозяйственный налог</p>
+                        <p className="text-xs mt-1">Для производителей сельхозпродукции</p>
+                      </TooltipContent>
+                    </Tooltip>
+                    
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <TabsTrigger value="psn">ПСН</TabsTrigger>
+                      </TooltipTrigger>
+                      <TooltipContent>
+                        <p className="font-semibold">Патентная система налогообложения</p>
+                        <p className="text-xs mt-1">Только для ИП. Покупка патента на вид деятельности</p>
+                      </TooltipContent>
+                    </Tooltip>
+                  </TabsList>
                 
                 <TabsContent value="general" className="space-y-4 mt-4">
                   <div>
@@ -403,7 +440,8 @@ const VATCalculator = () => {
                     </div>
                   </div>
                 </TabsContent>
-              </Tabs>
+                </Tabs>
+              </TooltipProvider>
             </CardContent>
           </Card>
         </div>
