@@ -129,7 +129,7 @@ const OKVEDCalculator = () => {
             <div className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></div>
             <span className="text-xs font-medium text-emerald-400/60 tracking-[0.2em] uppercase">НДС Калькулятор</span>
           </div>
-          <h1 className="text-6xl sm:text-7xl font-light tracking-tight text-white/95">
+          <h1 className="sm:text-7xl font-light tracking-tight text-white/95 text-5xl">
             Узнать размер НДС для моего ИП
           </h1>
           <p className="text-lg font-light text-slate-400">
