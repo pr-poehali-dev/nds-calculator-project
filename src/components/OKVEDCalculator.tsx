@@ -82,46 +82,42 @@ const OKVEDCalculator = () => {
             <div className="p-8 space-y-8">
               <div className="space-y-2">
                 <label className="text-sm font-medium text-[#6e6e73] tracking-wide uppercase">
-                  Поиск ОКВЭД
+                  ОКВЭД
                 </label>
-                <Input
-                  type="text"
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  placeholder="Введите код или название"
-                  className="h-12 border-0 bg-[#f5f5f7] rounded-xl text-base focus-visible:ring-1 focus-visible:ring-[#0071e3] transition-all"
-                />
-              </div>
-
-              {(searchQuery ? filteredOKVED : okvedList).length > 0 && (
-                <div className="space-y-2">
-                  <label className="text-sm font-medium text-[#6e6e73] tracking-wide uppercase">
-                    Выберите ОКВЭД
-                  </label>
-                  <Select value={okvedCode} onValueChange={setOkvedCode}>
-                    <SelectTrigger className="h-12 border-0 bg-[#f5f5f7] rounded-xl text-base focus:ring-1 focus:ring-[#0071e3]">
-                      <SelectValue placeholder="Не выбрано" />
-                    </SelectTrigger>
-                    <SelectContent className="rounded-xl border-0 shadow-[0_4px_24px_rgba(0,0,0,0.12)]">
+                <div className="relative">
+                  <Input
+                    type="text"
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    placeholder="Введите код или название"
+                    className="h-12 border-0 bg-[#f5f5f7] rounded-xl text-base focus-visible:ring-1 focus-visible:ring-[#0071e3] transition-all"
+                  />
+                  {(searchQuery ? filteredOKVED : okvedList).length > 0 && (
+                    <div className="absolute w-full mt-2 max-h-64 overflow-auto bg-white rounded-xl shadow-[0_4px_24px_rgba(0,0,0,0.12)] z-10">
                       {(searchQuery ? filteredOKVED : okvedList).slice(0, 50).map((item) => (
-                        <SelectItem 
-                          key={item.code} 
-                          value={item.code}
-                          className="rounded-lg py-3 focus:bg-[#f5f5f7]"
+                        <button
+                          key={item.code}
+                          onClick={() => {
+                            setOkvedCode(item.code);
+                            setSearchQuery(item.code);
+                          }}
+                          className={`w-full text-left px-4 py-3 hover:bg-[#f5f5f7] transition-colors ${
+                            okvedCode === item.code ? 'bg-[#f5f5f7]' : ''
+                          }`}
                         >
                           <span className="font-medium">{item.code}</span>
                           <span className="text-[#6e6e73] ml-2">{item.name}</span>
-                        </SelectItem>
+                        </button>
                       ))}
-                    </SelectContent>
-                  </Select>
-                  {selectedOKVED && (
-                    <p className="text-sm text-[#6e6e73] mt-2 font-light">
-                      {selectedOKVED.code} · {selectedOKVED.name}
-                    </p>
+                    </div>
                   )}
                 </div>
-              )}
+                {selectedOKVED && (
+                  <p className="text-sm text-[#6e6e73] mt-2 font-light">
+                    {selectedOKVED.code} · {selectedOKVED.name}
+                  </p>
+                )}
+              </div>
 
               <div className="space-y-2">
                 <label className="text-sm font-medium text-[#6e6e73] tracking-wide uppercase">
