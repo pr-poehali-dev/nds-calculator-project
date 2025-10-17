@@ -499,37 +499,6 @@ const OKVEDCalculator = () => {
             </div>
           </Card>
         </div>
-
-        <Card className={`border ${
-          difference > 0 
-            ? 'border-red-500/30 bg-gradient-to-br from-red-950/30 to-slate-900/30' 
-            : difference < 0 
-            ? 'border-emerald-500/30 bg-gradient-to-br from-emerald-950/30 to-slate-900/30'
-            : 'border-slate-700/30 bg-gradient-to-br from-slate-900/30 to-slate-900/30'
-        } backdrop-blur-xl shadow-2xl rounded-3xl overflow-hidden p-8 transition-all duration-500`}>
-          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6">
-            <div className="space-y-2">
-              <div className="text-xs font-semibold text-slate-400 tracking-[0.15em] uppercase">
-                Разница
-              </div>
-              <div className={`text-5xl font-light tracking-tight ${
-                difference > 0 ? 'text-red-400' : difference < 0 ? 'text-emerald-400' : 'text-slate-400'
-              }`}>
-                {difference > 0 ? '+' : ''}{difference.toLocaleString('ru-RU')} ₽
-              </div>
-            </div>
-            
-            {difference !== 0 && (
-              <div className={`px-6 py-3 rounded-2xl font-medium text-sm ${
-                difference > 0 
-                  ? 'bg-red-500/10 text-red-400 border border-red-500/20' 
-                  : 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20'
-              }`}>
-                {difference > 0 ? 'Налог вырастет' : 'Налог снизится'}
-              </div>
-            )}
-          </div>
-        </Card>
       </div>
     </div>
   );
