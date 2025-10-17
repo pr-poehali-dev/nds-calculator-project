@@ -132,6 +132,10 @@ const OKVEDCalculator = () => {
     }, 5000);
   };
 
+  const handleCloseResults = () => {
+    setShowResults(false);
+  };
+
   const getTaxSystemLabel = () => {
     switch (taxSystem) {
       case 'general':
@@ -477,7 +481,14 @@ const OKVEDCalculator = () => {
           )}
 
           {showResults && (
-            <>
+            <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/95 backdrop-blur-sm p-4 sm:p-8 animate-in fade-in duration-300">
+              <button
+                onClick={handleCloseResults}
+                className="absolute top-4 right-4 sm:top-8 sm:right-8 w-12 h-12 rounded-full bg-slate-800/80 hover:bg-slate-700 border border-slate-700/50 flex items-center justify-center text-slate-400 hover:text-white transition-all duration-200 hover:scale-110"
+              >
+                <Icon name="X" size={24} />
+              </button>
+              <div className="w-full max-w-5xl grid grid-cols-1 lg:grid-cols-2 gap-6 overflow-y-auto max-h-full">
               <Card className="border border-slate-800/50 bg-gradient-to-br from-slate-900/90 to-slate-900/50 backdrop-blur-xl shadow-2xl rounded-3xl overflow-hidden animate-in fade-in-50 slide-in-from-bottom-4 duration-700 delay-100">
                 <div className="p-8">
                   <div className="flex items-center gap-3 mb-8">
@@ -566,7 +577,8 @@ const OKVEDCalculator = () => {
                   </div>
                 </div>
               </Card>
-            </>
+              </div>
+            </div>
           )}
         </div>
       </div>
