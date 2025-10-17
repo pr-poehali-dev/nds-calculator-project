@@ -1,11 +1,7 @@
 import { useState, useEffect } from 'react';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import Icon from '@/components/ui/icon';
-import { Badge } from '@/components/ui/badge';
 
 interface OKVEDItem {
   code: string;
@@ -70,242 +66,215 @@ const OKVEDCalculator = () => {
   const selectedOKVED = okvedList.find(item => item.code === okvedCode);
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 p-4">
-      <div className="max-w-4xl mx-auto py-8">
-        <div className="text-center mb-8">
-          <h1 className="text-4xl font-bold text-gray-800 mb-2">
-            Калькулятор НДС по ОКВЭД
+    <div className="min-h-screen bg-[#fafafa] flex items-center justify-center p-6">
+      <div className="w-full max-w-2xl">
+        <div className="text-center mb-16 space-y-3">
+          <h1 className="text-5xl font-light tracking-tight text-[#1d1d1f]">
+            НДС
           </h1>
-          <p className="text-gray-600">
-            Сравните расчёт НДС для 2025 и 2026 года
+          <p className="text-lg font-light text-[#6e6e73]">
+            Расчёт для 2025 и 2026
           </p>
         </div>
 
-        <Card className="shadow-lg">
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <Icon name="Calculator" size={24} />
-              Расчёт НДС
-            </CardTitle>
-            <CardDescription>
-              Выберите ОКВЭД и систему налогообложения для расчёта
-            </CardDescription>
-          </CardHeader>
-          <CardContent className="space-y-6">
-            <div className="space-y-3">
-              <div>
-                <Label htmlFor="search">Поиск ОКВЭД</Label>
+        <div className="space-y-8">
+          <Card className="border-0 shadow-[0_2px_16px_rgba(0,0,0,0.08)] rounded-2xl overflow-hidden bg-white">
+            <div className="p-8 space-y-8">
+              <div className="space-y-2">
+                <label className="text-sm font-medium text-[#6e6e73] tracking-wide uppercase">
+                  Поиск ОКВЭД
+                </label>
                 <Input
-                  id="search"
                   type="text"
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  placeholder="Введите код или название..."
+                  placeholder="Введите код или название"
+                  className="h-12 border-0 bg-[#f5f5f7] rounded-xl text-base focus-visible:ring-1 focus-visible:ring-[#0071e3] transition-all"
                 />
               </div>
-              
-              <div>
-                <Label htmlFor="okved">Выберите ОКВЭД</Label>
-                <Select value={okvedCode} onValueChange={setOkvedCode}>
-                  <SelectTrigger>
-                    <SelectValue placeholder="Выберите из списка..." />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {(searchQuery ? filteredOKVED : okvedList).slice(0, 50).map((item) => (
-                      <SelectItem key={item.code} value={item.code}>
-                        {item.code} - {item.name}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-                {selectedOKVED && (
-                  <p className="text-sm text-muted-foreground mt-2">
-                    <Icon name="Check" className="inline h-4 w-4 text-green-600 mr-1" />
-                    {selectedOKVED.code} - {selectedOKVED.name}
-                  </p>
+
+              {(searchQuery ? filteredOKVED : okvedList).length > 0 && (
+                <div className="space-y-2">
+                  <label className="text-sm font-medium text-[#6e6e73] tracking-wide uppercase">
+                    Выберите ОКВЭД
+                  </label>
+                  <Select value={okvedCode} onValueChange={setOkvedCode}>
+                    <SelectTrigger className="h-12 border-0 bg-[#f5f5f7] rounded-xl text-base focus:ring-1 focus:ring-[#0071e3]">
+                      <SelectValue placeholder="Не выбрано" />
+                    </SelectTrigger>
+                    <SelectContent className="rounded-xl border-0 shadow-[0_4px_24px_rgba(0,0,0,0.12)]">
+                      {(searchQuery ? filteredOKVED : okvedList).slice(0, 50).map((item) => (
+                        <SelectItem 
+                          key={item.code} 
+                          value={item.code}
+                          className="rounded-lg py-3 focus:bg-[#f5f5f7]"
+                        >
+                          <span className="font-medium">{item.code}</span>
+                          <span className="text-[#6e6e73] ml-2">{item.name}</span>
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                  {selectedOKVED && (
+                    <p className="text-sm text-[#6e6e73] mt-2 font-light">
+                      {selectedOKVED.code} · {selectedOKVED.name}
+                    </p>
+                  )}
+                </div>
+              )}
+
+              <div className="space-y-2">
+                <label className="text-sm font-medium text-[#6e6e73] tracking-wide uppercase">
+                  Сумма без НДС
+                </label>
+                <div className="relative">
+                  <Input
+                    type="number"
+                    value={amount}
+                    onChange={(e) => setAmount(e.target.value)}
+                    placeholder="100000"
+                    className="h-12 border-0 bg-[#f5f5f7] rounded-xl text-base pr-12 focus-visible:ring-1 focus-visible:ring-[#0071e3]"
+                  />
+                  <span className="absolute right-4 top-1/2 -translate-y-1/2 text-[#6e6e73] font-light">₽</span>
+                </div>
+              </div>
+
+              <div className="space-y-4">
+                <div className="flex gap-2 p-1 bg-[#f5f5f7] rounded-xl">
+                  <button
+                    onClick={() => setTaxSystem('general')}
+                    className={`flex-1 py-2.5 px-4 rounded-lg text-sm font-medium transition-all ${
+                      taxSystem === 'general'
+                        ? 'bg-white text-[#1d1d1f] shadow-sm'
+                        : 'text-[#6e6e73] hover:text-[#1d1d1f]'
+                    }`}
+                  >
+                    Общая система
+                  </button>
+                  <button
+                    onClick={() => setTaxSystem('usn')}
+                    className={`flex-1 py-2.5 px-4 rounded-lg text-sm font-medium transition-all ${
+                      taxSystem === 'usn'
+                        ? 'bg-white text-[#1d1d1f] shadow-sm'
+                        : 'text-[#6e6e73] hover:text-[#1d1d1f]'
+                    }`}
+                  >
+                    УСН
+                  </button>
+                </div>
+
+                {taxSystem === 'general' && (
+                  <div className="space-y-4 pt-2">
+                    <div className="space-y-2">
+                      <label className="text-sm font-medium text-[#6e6e73] tracking-wide uppercase">
+                        Ставка НДС 2025
+                      </label>
+                      <Select
+                        value={vatRate2025.toString()}
+                        onValueChange={(v) => setVatRate2025(Number(v))}
+                      >
+                        <SelectTrigger className="h-12 border-0 bg-[#f5f5f7] rounded-xl text-base focus:ring-1 focus:ring-[#0071e3]">
+                          <SelectValue />
+                        </SelectTrigger>
+                        <SelectContent className="rounded-xl border-0 shadow-[0_4px_24px_rgba(0,0,0,0.12)]">
+                          <SelectItem value="0" className="rounded-lg py-3">0%</SelectItem>
+                          <SelectItem value="10" className="rounded-lg py-3">10%</SelectItem>
+                          <SelectItem value="20" className="rounded-lg py-3">20%</SelectItem>
+                        </SelectContent>
+                      </Select>
+                      {vatRate2025 === 20 && (
+                        <p className="text-xs text-[#6e6e73] font-light">
+                          В 2026 изменится на 22%
+                        </p>
+                      )}
+                    </div>
+                  </div>
+                )}
+
+                {taxSystem === 'usn' && (
+                  <div className="space-y-2 pt-2">
+                    <label className="text-sm font-medium text-[#6e6e73] tracking-wide uppercase">
+                      Доход за год (млн ₽)
+                    </label>
+                    <Input
+                      type="number"
+                      value={usnRevenue}
+                      onChange={(e) => setUsnRevenue(Number(e.target.value))}
+                      placeholder="100"
+                      className="h-12 border-0 bg-[#f5f5f7] rounded-xl text-base focus-visible:ring-1 focus-visible:ring-[#0071e3]"
+                    />
+                    <p className="text-xs text-[#6e6e73] font-light">
+                      {usnRevenue >= 60 && usnRevenue <= 250 && 'Ставка 5%'}
+                      {usnRevenue > 250 && usnRevenue <= 450 && 'Ставка 7%'}
+                    </p>
+                  </div>
                 )}
               </div>
             </div>
+          </Card>
 
-            <div>
-              <Label htmlFor="amount">Сумма без НДС (₽)</Label>
-              <Input
-                id="amount"
-                type="number"
-                value={amount}
-                onChange={(e) => setAmount(e.target.value)}
-                placeholder="100000"
-              />
-            </div>
-
-            <Tabs value={taxSystem} onValueChange={(v) => setTaxSystem(v as 'general' | 'usn')}>
-              <TabsList className="grid w-full grid-cols-2">
-                <TabsTrigger value="general">Общая система</TabsTrigger>
-                <TabsTrigger value="usn">УСН</TabsTrigger>
-              </TabsList>
-
-              <TabsContent value="general" className="space-y-4 mt-4">
-                <div className="p-3 bg-blue-50 border border-blue-200 rounded-lg mb-4">
-                  <p className="text-sm text-blue-800">
-                    💡 Если ваш доход за последние 3 месяца ≤ 2 млн ₽, вы можете получить освобождение от НДС
+          <div className="grid grid-cols-2 gap-4">
+            <Card className="border-0 shadow-[0_2px_16px_rgba(0,0,0,0.08)] rounded-2xl overflow-hidden bg-white">
+              <div className="p-6 space-y-6">
+                <div className="space-y-1">
+                  <p className="text-xs font-medium text-[#6e6e73] tracking-wide uppercase">
+                    2025
+                  </p>
+                  <p className="text-4xl font-light text-[#1d1d1f] tracking-tight">
+                    {result2025.total.toLocaleString('ru-RU', { maximumFractionDigits: 0 })}
+                  </p>
+                  <p className="text-sm text-[#6e6e73] font-light">₽</p>
+                </div>
+                <div className="space-y-1 pt-4 border-t border-[#d2d2d7]">
+                  <p className="text-xs text-[#6e6e73] font-light">Ставка {vat2025Rate}%</p>
+                  <p className="text-xs text-[#6e6e73] font-light">
+                    НДС {result2025.vat.toLocaleString('ru-RU', { maximumFractionDigits: 0 })} ₽
                   </p>
                 </div>
-
-                <div>
-                  <Label htmlFor="rate2025">Ставка НДС 2025 (%)</Label>
-                  <Select
-                    value={vatRate2025.toString()}
-                    onValueChange={(v) => setVatRate2025(Number(v))}
-                  >
-                    <SelectTrigger>
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="0">0% (Экспорт)</SelectItem>
-                      <SelectItem value="10">10% (Льготная)</SelectItem>
-                      <SelectItem value="20">20% (Стандартная)</SelectItem>
-                    </SelectContent>
-                  </Select>
-                  <p className="text-sm text-muted-foreground mt-2">
-                    {vatRate2025 === 20 
-                      ? 'В 2026 году ставка повысится до 22%'
-                      : 'Ставка не изменится в 2026 году'}
-                  </p>
-                </div>
-              </TabsContent>
-
-              <TabsContent value="usn" className="space-y-4 mt-4">
-                <div className="p-3 bg-amber-50 border border-amber-200 rounded-lg">
-                  <p className="text-sm text-amber-800">
-                    ⚠️ Применяется с 01.01.2025 только для налогоплательщиков УСН
-                  </p>
-                </div>
-
-                <div>
-                  <Label htmlFor="revenue">Доход за календарный год (млн ₽)</Label>
-                  <Input
-                    id="revenue"
-                    type="number"
-                    value={usnRevenue}
-                    onChange={(e) => setUsnRevenue(Number(e.target.value))}
-                    placeholder="100"
-                  />
-                  <p className="text-sm text-muted-foreground mt-2">
-                    {usnRevenue < 60 && '❌ УСН НДС не применяется (доход < 60 млн)'}
-                    {usnRevenue >= 60 && usnRevenue <= 250 && '✅ Ставка НДС: 5%'}
-                    {usnRevenue > 250 && usnRevenue <= 450 && '✅ Ставка НДС: 7%'}
-                    {usnRevenue > 450 && '❌ Превышен лимит для УСН (> 450 млн)'}
-                  </p>
-                </div>
-              </TabsContent>
-            </Tabs>
-
-            <div className="border-t pt-6 space-y-4">
-              <div className="grid md:grid-cols-2 gap-4">
-                <Card className="bg-green-50 border-green-200">
-                  <CardHeader className="pb-3">
-                    <CardTitle className="text-lg flex items-center gap-2">
-                      <Icon name="Calendar" size={20} />
-                      2025 год
-                    </CardTitle>
-                  </CardHeader>
-                  <CardContent className="space-y-2">
-                    <div className="flex justify-between">
-                      <span className="text-gray-600">Ставка НДС:</span>
-                      <Badge variant="secondary">{vat2025Rate}%</Badge>
-                    </div>
-                    <div className="flex justify-between">
-                      <span className="text-gray-600">Сумма НДС:</span>
-                      <span className="font-semibold">{result2025.vat.toLocaleString('ru-RU')} ₽</span>
-                    </div>
-                    <div className="flex justify-between text-lg">
-                      <span className="font-semibold">Итого:</span>
-                      <span className="font-bold text-green-700">
-                        {result2025.total.toLocaleString('ru-RU')} ₽
-                      </span>
-                    </div>
-                  </CardContent>
-                </Card>
-
-                <Card className="bg-orange-50 border-orange-200">
-                  <CardHeader className="pb-3">
-                    <CardTitle className="text-lg flex items-center gap-2">
-                      <Icon name="Calendar" size={20} />
-                      2026 год
-                    </CardTitle>
-                  </CardHeader>
-                  <CardContent className="space-y-2">
-                    <div className="flex justify-between">
-                      <span className="text-gray-600">Ставка НДС:</span>
-                      <Badge variant="secondary">{vat2026Rate}%</Badge>
-                    </div>
-                    <div className="flex justify-between">
-                      <span className="text-gray-600">Сумма НДС:</span>
-                      <span className="font-semibold">{result2026.vat.toLocaleString('ru-RU')} ₽</span>
-                    </div>
-                    <div className="flex justify-between text-lg">
-                      <span className="font-semibold">Итого:</span>
-                      <span className="font-bold text-orange-700">
-                        {result2026.total.toLocaleString('ru-RU')} ₽
-                      </span>
-                    </div>
-                  </CardContent>
-                </Card>
               </div>
+            </Card>
 
-              {difference !== 0 && (
-                <Card className="bg-red-50 border-red-200">
-                  <CardContent className="pt-6">
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center gap-2">
-                        <Icon name="TrendingUp" size={24} className="text-red-600" />
-                        <span className="font-semibold text-gray-700">Разница в 2026 году:</span>
-                      </div>
-                      <span className="text-2xl font-bold text-red-600">
-                        +{difference.toLocaleString('ru-RU')} ₽
-                      </span>
-                    </div>
-                    <p className="text-sm text-gray-600 mt-2">
-                      Увеличение налоговой нагрузки на {((difference / result2025.total) * 100).toFixed(2)}%
+            <Card className="border-0 shadow-[0_2px_16px_rgba(0,0,0,0.08)] rounded-2xl overflow-hidden bg-white">
+              <div className="p-6 space-y-6">
+                <div className="space-y-1">
+                  <p className="text-xs font-medium text-[#6e6e73] tracking-wide uppercase">
+                    2026
+                  </p>
+                  <p className="text-4xl font-light text-[#1d1d1f] tracking-tight">
+                    {result2026.total.toLocaleString('ru-RU', { maximumFractionDigits: 0 })}
+                  </p>
+                  <p className="text-sm text-[#6e6e73] font-light">₽</p>
+                </div>
+                <div className="space-y-1 pt-4 border-t border-[#d2d2d7]">
+                  <p className="text-xs text-[#6e6e73] font-light">Ставка {vat2026Rate}%</p>
+                  <p className="text-xs text-[#6e6e73] font-light">
+                    НДС {result2026.vat.toLocaleString('ru-RU', { maximumFractionDigits: 0 })} ₽
+                  </p>
+                </div>
+              </div>
+            </Card>
+          </div>
+
+          {difference !== 0 && (
+            <Card className="border-0 shadow-[0_2px_16px_rgba(0,0,0,0.08)] rounded-2xl overflow-hidden bg-gradient-to-br from-[#f5f5f7] to-white">
+              <div className="p-6">
+                <div className="flex items-baseline justify-between">
+                  <p className="text-sm font-medium text-[#6e6e73] tracking-wide">
+                    Разница
+                  </p>
+                  <div className="text-right">
+                    <p className="text-2xl font-light text-[#1d1d1f]">
+                      +{difference.toLocaleString('ru-RU', { maximumFractionDigits: 0 })} ₽
                     </p>
-                  </CardContent>
-                </Card>
-              )}
-            </div>
-          </CardContent>
-        </Card>
-
-        <Card className="mt-6 bg-gray-50">
-          <CardHeader>
-            <CardTitle className="text-lg flex items-center gap-2">
-              <Icon name="Info" size={20} />
-              Справочная информация
-            </CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-3 text-sm">
-            <div>
-              <p className="font-semibold mb-1">Общая система налогообложения (2025):</p>
-              <ul className="list-disc list-inside space-y-1 text-gray-700">
-                <li><strong>0%</strong> - экспорт, свободная таможенная зона</li>
-                <li><strong>10%</strong> - продовольствие, детские товары, медтовары, книги</li>
-                <li><strong>20%</strong> - все остальные товары и услуги</li>
-              </ul>
-            </div>
-            <div>
-              <p className="font-semibold mb-1">УСН с НДС (с 01.01.2025):</p>
-              <ul className="list-disc list-inside space-y-1 text-gray-700">
-                <li><strong>5%</strong> - доход 60-250 млн ₽</li>
-                <li><strong>7%</strong> - доход 250-450 млн ₽</li>
-              </ul>
-            </div>
-            <div className="p-3 bg-yellow-50 border border-yellow-200 rounded">
-              <p className="font-semibold text-yellow-800 mb-1">Важно!</p>
-              <p className="text-yellow-700">
-                С 2026 года стандартная ставка НДС 20% повышается до 22%
-              </p>
-            </div>
-          </CardContent>
-        </Card>
+                    <p className="text-xs text-[#6e6e73] font-light mt-1">
+                      +{((difference / result2025.total) * 100).toFixed(1)}%
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </Card>
+          )}
+        </div>
       </div>
     </div>
   );
