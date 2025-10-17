@@ -63,6 +63,18 @@ const OKVEDCalculator = () => {
     return 20;
   };
 
+  const getUSNRate2025 = (revenue: number): number => {
+    if (revenue >= 60 && revenue <= 250) return 5;
+    if (revenue > 250 && revenue <= 450) return 7;
+    return 0;
+  };
+
+  const getUSNRate2026 = (revenue: number): number => {
+    if (revenue >= 10 && revenue <= 250) return 5;
+    if (revenue > 250 && revenue <= 450) return 7;
+    return 0;
+  };
+
   const getVatRate2026 = (rate2025: number) => {
     return rate2025 === 20 ? 22 : rate2025;
   };
@@ -76,10 +88,12 @@ const OKVEDCalculator = () => {
   const numAmount = parseFloat(amount) || 0;
   
   const vat2025Rate = taxSystem === 'usn' 
-    ? (usnRevenue >= 250 ? 7 : 5)
+    ? getUSNRate2025(usnRevenue)
     : vatRate2025;
   
-  const vat2026Rate = getVatRate2026(vat2025Rate);
+  const vat2026Rate = taxSystem === 'usn'
+    ? getUSNRate2026(usnRevenue)
+    : getVatRate2026(vat2025Rate);
 
   const result2025 = calculateVAT(numAmount, vat2025Rate);
   const result2026 = calculateVAT(numAmount, vat2026Rate);
@@ -264,14 +278,19 @@ const OKVEDCalculator = () => {
                           ⚠️ С 2026 года порог УСН снижается до 10 млн ₽
                         </p>
                         <p className="text-xs text-amber-700 mt-1">
-                          При доходе {usnRevenue} млн ₽ нужно будет перейти на ОСНО
+                          При доходе {usnRevenue} млн ₽ в 2025 году УСН не применяется, нужен переход на ОСНО
                         </p>
                       </div>
                     )}
-                    {usnRevenue >= 60 && usnRevenue <= 450 && (
-                      <p className="text-xs text-gray-400 font-light mt-2 animate-in fade-in duration-300">
-                        {usnRevenue >= 60 && usnRevenue <= 250 && 'Ставка 5%'}
-                        {usnRevenue > 250 && usnRevenue <= 450 && 'Ставка 7%'}
+                    {usnRevenue >= 60 && usnRevenue <= 250 && (
+                      <div className="text-xs text-gray-600 font-light mt-2 space-y-1 animate-in fade-in duration-300">
+                        <p>2025: Ставка 5%</p>
+                        <p className="text-green-600">2026: Ставка 5% (порог снизился до 10 млн)</p>
+                      </div>
+                    )}
+                    {usnRevenue > 250 && usnRevenue <= 450 && (
+                      <p className="text-xs text-gray-600 font-light mt-2 animate-in fade-in duration-300">
+                        Ставка 7% (доход превышает 250 млн)
                       </p>
                     )}
                   </div>
