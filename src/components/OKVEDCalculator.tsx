@@ -13,6 +13,7 @@ const OKVEDCalculator = () => {
   const [okvedCode, setOkvedCode] = useState<string>('');
   const [okvedList, setOkvedList] = useState<OKVEDItem[]>([]);
   const [searchQuery, setSearchQuery] = useState<string>('');
+  const [isDropdownOpen, setIsDropdownOpen] = useState<boolean>(false);
   const [taxSystem, setTaxSystem] = useState<'general' | 'usn'>('general');
   const [vatRate2025, setVatRate2025] = useState<number>(20);
   const [usnRevenue, setUsnRevenue] = useState<number>(100);
@@ -89,10 +90,12 @@ const OKVEDCalculator = () => {
                     type="text"
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
+                    onFocus={() => setIsDropdownOpen(true)}
+                    onBlur={() => setTimeout(() => setIsDropdownOpen(false), 200)}
                     placeholder="Введите код или название"
                     className="h-12 border-0 bg-[#f5f5f7] rounded-xl text-base focus-visible:ring-1 focus-visible:ring-[#0071e3] transition-all"
                   />
-                  {(searchQuery ? filteredOKVED : okvedList).length > 0 && (
+                  {isDropdownOpen && (searchQuery ? filteredOKVED : okvedList).length > 0 && (
                     <div className="absolute w-full mt-2 max-h-64 overflow-auto bg-white rounded-xl shadow-[0_4px_24px_rgba(0,0,0,0.12)] z-10">
                       {(searchQuery ? filteredOKVED : okvedList).slice(0, 50).map((item) => (
                         <button
@@ -100,6 +103,7 @@ const OKVEDCalculator = () => {
                           onClick={() => {
                             setOkvedCode(item.code);
                             setSearchQuery(item.code);
+                            setIsDropdownOpen(false);
                           }}
                           className={`w-full text-left px-4 py-3 hover:bg-[#f5f5f7] transition-colors ${
                             okvedCode === item.code ? 'bg-[#f5f5f7]' : ''
