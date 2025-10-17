@@ -19,6 +19,8 @@ const OKVEDCalculator = () => {
   const [usnRevenue, setUsnRevenue] = useState<number>(100);
   const [employeeCount, setEmployeeCount] = useState<number>(5);
   const [showAdvancedOptions, setShowAdvancedOptions] = useState<boolean>(false);
+  const [isCalculating, setIsCalculating] = useState<boolean>(false);
+  const [showResults, setShowResults] = useState<boolean>(false);
 
   useEffect(() => {
     loadOKVED();
@@ -121,8 +123,24 @@ const OKVEDCalculator = () => {
     }
   }, [okvedCode, selectedOKVED, taxSystem]);
 
+  const handleCalculate = () => {
+    setIsCalculating(true);
+    setTimeout(() => {
+      setIsCalculating(false);
+      setShowResults(true);
+    }, 5000);
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 flex items-center justify-center p-4 sm:p-8">
+      {isCalculating && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/90 backdrop-blur-sm">
+          <div className="text-9xl animate-bounce">
+            🪄
+          </div>
+        </div>
+      )}
+      
       <div className="w-full max-w-5xl animate-in fade-in duration-1000">
         
         <div className="text-center mb-16 space-y-6 animate-in slide-in-from-bottom-4 duration-700">
@@ -451,63 +469,109 @@ const OKVEDCalculator = () => {
             </div>
           </Card>
 
-          <Card className="border border-slate-800/50 bg-gradient-to-br from-slate-900/90 to-slate-900/50 backdrop-blur-xl shadow-2xl rounded-3xl overflow-hidden transition-all duration-500 hover:border-slate-700/50 hover:shadow-emerald-500/5">
-            <div className="p-8 space-y-6">
-              <div className="text-xs font-semibold text-emerald-400/80 tracking-[0.15em] uppercase">
-                Сравнение ставок
-              </div>
-              
-              <div className="grid grid-cols-2 gap-8">
-                <div className="space-y-3">
-                  <div className="text-sm text-slate-500 font-medium">2025</div>
-                  <div className="text-6xl font-light text-white/95 tracking-tight">
-                    {vat2025Rate}%
-                  </div>
-                </div>
-                
-                <div className="space-y-3">
-                  <div className="text-sm text-slate-500 font-medium">2026</div>
-                  <div className="flex items-baseline gap-2">
-                    <div className={`text-6xl font-light tracking-tight ${
-                      vat2026Rate > vat2025Rate 
-                        ? 'text-red-400' 
-                        : vat2026Rate < vat2025Rate 
-                        ? 'text-emerald-400' 
-                        : 'text-white/95'
-                    }`}>
-                      {vat2026Rate}%
-                    </div>
-                    {vat2026Rate !== vat2025Rate && (
-                      <span className={`text-3xl font-light ${
-                        vat2026Rate > vat2025Rate ? 'text-red-400' : 'text-emerald-400'
-                      }`}>
-                        {vat2026Rate > vat2025Rate ? '↑' : '↓'}
-                      </span>
-                    )}
-                  </div>
-                </div>
-              </div>
+          {!showResults && (
+            <div className="flex items-center justify-center">
+              <button
+                onClick={handleCalculate}
+                className="w-full h-full min-h-[400px] bg-gradient-to-br from-emerald-500 to-teal-500 hover:from-emerald-600 hover:to-teal-600 text-white font-bold text-3xl rounded-3xl shadow-2xl shadow-emerald-500/30 transition-all duration-300 hover:scale-105 hover:shadow-emerald-500/50"
+              >
+                Рассчитать налоги 🪄
+              </button>
+            </div>
+          )}
 
-              {vat2026Rate !== vat2025Rate && (
-                <div className="pt-4">
-                  <div className={`px-5 py-4 rounded-2xl border ${
-                    vat2026Rate > vat2025Rate
-                      ? 'bg-red-500/10 border-red-500/30'
-                      : 'bg-emerald-500/10 border-emerald-500/30'
-                  }`}>
-                    <p className={`text-sm font-semibold ${
-                      vat2026Rate > vat2025Rate ? 'text-red-400' : 'text-emerald-400'
-                    }`}>
-                      {vat2026Rate > vat2025Rate 
-                        ? `Ставка увеличится на ${vat2026Rate - vat2025Rate}%` 
-                        : `Ставка снизится на ${vat2025Rate - vat2026Rate}%`
+          {showResults && (
+            <>
+              <Card className="border border-slate-800/50 bg-gradient-to-br from-slate-900/90 to-slate-900/50 backdrop-blur-xl shadow-2xl rounded-3xl overflow-hidden animate-in fade-in-50 slide-in-from-bottom-4 duration-700 delay-100">
+                <div className="p-8">
+                  <div className="flex items-center gap-3 mb-8">
+                    <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-blue-500/20 to-blue-600/10 flex items-center justify-center border border-blue-500/30">
+                      <Icon name="Calendar" className="w-5 h-5 text-blue-400" />
+                    </div>
+                    <div>
+                      <h3 className="text-2xl font-semibold text-white">2025</h3>
+                      <p className="text-xs text-slate-500 uppercase tracking-wider">Текущий год</p>
+                    </div>
+                  </div>
+                  <div className="space-y-6">
+                    <div className="flex justify-between items-end">
+                      <span className="text-sm text-slate-400">Ставка {getTaxSystemLabel()}</span>
+                      <span className="text-2xl font-bold text-white">{vat2025Rate}%</span>
+                    </div>
+                    <div className="flex justify-between items-end">
+                      <span className="text-sm text-slate-400">{getTaxSystemLabel()}</span>
+                      <span className="text-xl font-semibold text-blue-400">{result2025.vat.toLocaleString('ru-RU')} ₽</span>
+                    </div>
+                    <div className="pt-6 border-t border-slate-700/50">
+                      <div className="flex justify-between items-end">
+                        <span className="text-sm font-medium text-slate-300">Итого с {getTaxSystemLabel()}</span>
+                        <span className="text-3xl font-bold text-white">{result2025.total.toLocaleString('ru-RU')} ₽</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </Card>
+
+              <Card className="border border-slate-800/50 bg-gradient-to-br from-slate-900/90 to-slate-900/50 backdrop-blur-xl shadow-2xl rounded-3xl overflow-hidden animate-in fade-in-50 slide-in-from-bottom-4 duration-700 delay-200">
+                <div className="p-8">
+                  <div className="flex items-center gap-3 mb-8">
+                    <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-purple-500/20 to-purple-600/10 flex items-center justify-center border border-purple-500/30">
+                      <Icon name="TrendingUp" className="w-5 h-5 text-purple-400" />
+                    </div>
+                    <div>
+                      <h3 className="text-2xl font-semibold text-white">2026</h3>
+                      <p className="text-xs text-slate-500 uppercase tracking-wider">Следующий год</p>
+                    </div>
+                  </div>
+                  <div className="space-y-6">
+                    <div className="flex justify-between items-end">
+                      <span className="text-sm text-slate-400">Ставка {getTaxSystemLabel()}</span>
+                      <span className="text-2xl font-bold text-white">{vat2026Rate}%</span>
+                    </div>
+                    <div className="flex justify-between items-end">
+                      <span className="text-sm text-slate-400">{getTaxSystemLabel()}</span>
+                      <span className="text-xl font-semibold text-purple-400">{result2026.vat.toLocaleString('ru-RU')} ₽</span>
+                    </div>
+                    <div className="pt-6 border-t border-slate-700/50">
+                      <div className="flex justify-between items-end">
+                        <span className="text-sm font-medium text-slate-300">Итого с {getTaxSystemLabel()}</span>
+                        <span className="text-3xl font-bold text-white">{result2026.total.toLocaleString('ru-RU')} ₽</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </Card>
+
+              <Card className="lg:col-span-2 border border-slate-800/50 bg-gradient-to-br from-slate-900/90 to-slate-900/50 backdrop-blur-xl shadow-2xl rounded-3xl overflow-hidden animate-in fade-in-50 slide-in-from-bottom-4 duration-700 delay-300">
+                <div className="p-8">
+                  <div className="flex items-center gap-3 mb-6">
+                    <div className={`w-12 h-12 rounded-2xl bg-gradient-to-br ${difference > 0 ? 'from-rose-500/20 to-rose-600/10 border-rose-500/30' : 'from-emerald-500/20 to-emerald-600/10 border-emerald-500/30'} flex items-center justify-center border`}>
+                      <Icon name={difference > 0 ? "TrendingUp" : "TrendingDown"} className={`w-5 h-5 ${difference > 0 ? 'text-rose-400' : 'text-emerald-400'}`} />
+                    </div>
+                    <div>
+                      <h3 className="text-2xl font-semibold text-white">Разница</h3>
+                      <p className="text-xs text-slate-500 uppercase tracking-wider">2026 vs 2025</p>
+                    </div>
+                  </div>
+                  <div className="text-center py-8">
+                    <div className="text-5xl sm:text-6xl font-bold mb-3">
+                      <span className={difference > 0 ? 'text-rose-400' : 'text-emerald-400'}>
+                        {difference > 0 ? '+' : ''}{difference.toLocaleString('ru-RU')} ₽
+                      </span>
+                    </div>
+                    <p className="text-sm text-slate-400">
+                      {difference > 0 
+                        ? `В 2026 году вы заплатите на ${Math.abs(difference).toLocaleString('ru-RU')} ₽ больше` 
+                        : difference < 0 
+                        ? `В 2026 году вы сэкономите ${Math.abs(difference).toLocaleString('ru-RU')} ₽`
+                        : 'Разницы в налогах нет'
                       }
                     </p>
                   </div>
                 </div>
-              )}
-            </div>
-          </Card>
+              </Card>
+            </>
+          )}
         </div>
       </div>
     </div>
