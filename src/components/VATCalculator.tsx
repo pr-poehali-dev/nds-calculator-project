@@ -19,17 +19,14 @@ const VATCalculator = () => {
   const [okvedCode, setOkvedCode] = useState<string>('');
   const [okvedList, setOkvedList] = useState<OKVEDItem[]>([]);
   const [searchQuery, setSearchQuery] = useState<string>('');
-  const [taxSystem, setTaxSystem] = useState<'general' | 'usn' | 'psn' | 'ausn'>('general');
+  const [taxSystem, setTaxSystem] = useState<'general' | 'usn'>('general');
   const [vatRate2025, setVatRate2025] = useState<number>(20);
   const [vatRate2026, setVatRate2026] = useState<number>(22);
   const [usnRevenue, setUsnRevenue] = useState<number>(100);
   const [generalRevenue, setGeneralRevenue] = useState<number>(10);
-  const [psnRevenue, setPsnRevenue] = useState<number>(30);
-  const [ausnRevenue, setAusnRevenue] = useState<number>(30);
+
   const [isExempt2025, setIsExempt2025] = useState<boolean>(false);
   const [isExempt2026, setIsExempt2026] = useState<boolean>(false);
-  const [psnAvailable2025, setPsnAvailable2025] = useState<boolean>(true);
-  const [psnAvailable2026, setPsnAvailable2026] = useState<boolean>(true);
 
   useEffect(() => {
     const fetchOKVED = async () => {
@@ -96,36 +93,8 @@ const VATCalculator = () => {
         setIsExempt2025(false);
         setIsExempt2026(false);
       }
-    } else if (taxSystem === 'psn') {
-      if (psnRevenue <= 60) {
-        setPsnAvailable2025(true);
-        setIsExempt2025(true);
-        setVatRate2025(0);
-      } else {
-        setPsnAvailable2025(false);
-        setIsExempt2025(false);
-      }
-      
-      if (psnRevenue <= 10) {
-        setPsnAvailable2026(true);
-        setIsExempt2026(true);
-        setVatRate2026(0);
-      } else {
-        setPsnAvailable2026(false);
-        setIsExempt2026(false);
-      }
-    } else if (taxSystem === 'ausn') {
-      if (ausnRevenue <= 60) {
-        setIsExempt2025(true);
-        setIsExempt2026(true);
-        setVatRate2025(0);
-        setVatRate2026(0);
-      } else {
-        setIsExempt2025(false);
-        setIsExempt2026(false);
-      }
     }
-  }, [taxSystem, usnRevenue, generalRevenue, psnRevenue, ausnRevenue]);
+  }, [taxSystem, usnRevenue, generalRevenue]);
 
   const filteredOKVED = okvedList.filter(item =>
     item.code.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -235,26 +204,6 @@ const VATCalculator = () => {
                         <p className="text-xs mt-1">Специальный режим с пониженной ставкой</p>
                       </TooltipContent>
                     </Tooltip>
-                    
-                    <Tooltip>
-                      <TooltipTrigger asChild>
-                        <TabsTrigger value="psn">ПСН</TabsTrigger>
-                      </TooltipTrigger>
-                      <TooltipContent>
-                        <p className="font-semibold">Патентная система налогообложения</p>
-                        <p className="text-xs mt-1">Только для ИП. Покупка патента на вид деятельности</p>
-                      </TooltipContent>
-                    </Tooltip>
-                    
-                    <Tooltip>
-                      <TooltipTrigger asChild>
-                        <TabsTrigger value="ausn">АУСН</TabsTrigger>
-                      </TooltipTrigger>
-                      <TooltipContent>
-                        <p className="font-semibold">Автоматизированная упрощённая система</p>
-                        <p className="text-xs mt-1">Спецрежим с автоматическим учётом для ИП и ООО</p>
-                      </TooltipContent>
-                    </Tooltip>
                   </TabsList>
                 
                 <TabsContent value="general" className="space-y-4 mt-4">
@@ -345,86 +294,6 @@ const VATCalculator = () => {
                     )}
                   </div>
                 </TabsContent>
-
-                <TabsContent value="psn" className="space-y-4 mt-4">
-                  <div>
-                    <Label htmlFor="psnRevenue">Годовой доход (млн ₽)</Label>
-                    <Input
-                      id="psnRevenue"
-                      type="number"
-                      placeholder="Введите доход"
-                      value={psnRevenue}
-                      onChange={(e) => setPsnRevenue(parseFloat(e.target.value) || 0)}
-                      className="mt-2"
-                    />
-                    {psnAvailable2025 && psnAvailable2026 ? (
-                      <div className="mt-2 p-3 bg-green-50 border border-green-200 rounded-lg">
-                        <p className="text-sm text-green-800 font-medium">✓ ПСН доступна</p>
-                        <p className="text-xs text-green-700 mt-1">Доход не превышает 60 млн ₽ (2025) и 10 млн ₽ (2026)</p>
-                        <p className="text-xs text-green-700">НДС не уплачивается при патентной системе</p>
-                      </div>
-                    ) : psnAvailable2025 && !psnAvailable2026 ? (
-                      <div className="mt-2 p-3 bg-red-50 border border-red-200 rounded-lg">
-                        <p className="text-sm text-red-800 font-medium">⚠ Потеря ПСН в 2026</p>
-                        <p className="text-xs text-red-700 mt-1">2025: ПСН доступна (до 60 млн) | 2026: доход превышает лимит 10 млн</p>
-                        <p className="text-xs text-red-700 font-semibold mt-2">Потребуется переход на УСН или ОСН с уплатой НДС!</p>
-                      </div>
-                    ) : !psnAvailable2025 && !psnAvailable2026 ? (
-                      <div className="mt-2 p-3 bg-red-50 border border-red-200 rounded-lg">
-                        <p className="text-sm text-red-800 font-medium">✗ ПСН недоступна</p>
-                        <p className="text-xs text-red-700 mt-1">Доход превышает допустимый лимит для патента</p>
-                        <p className="text-xs text-red-700">Рассмотрите УСН или ОСН</p>
-                      </div>
-                    ) : (
-                      <div className="mt-2 p-3 bg-yellow-50 border border-yellow-200 rounded-lg">
-                        <p className="text-sm text-yellow-800 font-medium">⚠ Изменение условий</p>
-                        <p className="text-xs text-yellow-700 mt-1">Проверьте доступность ПСН для вашей ситуации</p>
-                      </div>
-                    )}
-                    <div className="mt-3 p-3 bg-blue-50 border border-blue-200 rounded-lg">
-                      <p className="text-xs text-blue-800 font-medium mb-2">Важные изменения 2026:</p>
-                      <p className="text-xs text-blue-700">• Лимит дохода снижен с 60 до 10 млн ₽</p>
-                      <p className="text-xs text-blue-700">• Исключена розничная торговля через стационарные точки</p>
-                      <p className="text-xs text-blue-700">• Исключены грузоперевозки</p>
-                      <p className="text-xs text-blue-700">• Упрощен пересчет стоимости патента</p>
-                    </div>
-                  </div>
-                </TabsContent>
-
-                <TabsContent value="ausn" className="space-y-4 mt-4">
-                  <div>
-                    <Label htmlFor="ausnRevenue">Годовой доход (млн ₽)</Label>
-                    <Input
-                      id="ausnRevenue"
-                      type="number"
-                      placeholder="Введите доход"
-                      value={ausnRevenue}
-                      onChange={(e) => setAusnRevenue(parseFloat(e.target.value) || 0)}
-                      className="mt-2"
-                    />
-                    {ausnRevenue <= 60 ? (
-                      <div className="mt-2 p-3 bg-green-50 border border-green-200 rounded-lg">
-                        <p className="text-sm text-green-800 font-medium">✓ АУСН доступна</p>
-                        <p className="text-xs text-green-700 mt-1">Доход не превышает 60 млн ₽ в год</p>
-                        <p className="text-xs text-green-700">НДС не уплачивается при АУСН</p>
-                      </div>
-                    ) : (
-                      <div className="mt-2 p-3 bg-red-50 border border-red-200 rounded-lg">
-                        <p className="text-sm text-red-800 font-medium">✗ АУСН недоступна</p>
-                        <p className="text-xs text-red-700 mt-1">Доход превышает лимит 60 млн ₽</p>
-                        <p className="text-xs text-red-700">Рассмотрите УСН или ОСН</p>
-                      </div>
-                    )}
-                    <div className="mt-3 p-3 bg-blue-50 border border-blue-200 rounded-lg">
-                      <p className="text-xs text-blue-800 font-medium mb-2">Особенности АУСН:</p>
-                      <p className="text-xs text-blue-700">• Доступна с 2025 года во всех регионах РФ</p>
-                      <p className="text-xs text-blue-700">• Численность работников до 5 человек</p>
-                      <p className="text-xs text-blue-700">• Автоматический учет в личном кабинете</p>
-                      <p className="text-xs text-blue-700">• Не уплачиваются страховые взносы</p>
-                      <p className="text-xs text-blue-700">• Ставка: 8% (доходы) или 20% (доходы-расходы)</p>
-                    </div>
-                  </div>
-                </TabsContent>
                 </Tabs>
               </TooltipProvider>
             </CardContent>
@@ -511,31 +380,14 @@ const VATCalculator = () => {
                       <p>• 20% (2025) / 22% (2026) - стандартная ставка</p>
                       <p>• Освобождение: выручка ≤ 2 млн ₽ за 3 месяца (требуется уведомление)</p>
                     </>
-                  ) : taxSystem === 'usn' ? (
+                  ) : (
                     <>
                       <p>• 0% - автоматически при доходе до 60 млн ₽ (2025) / до 10 млн ₽ (2026)</p>
                       <p>• 5% - при доходе от 60 до 250 млн рублей</p>
                       <p>• 7% - при доходе от 250 до 450 млн рублей</p>
                       <p className="font-semibold text-orange-700">⚠ ВАЖНО: в 2026 лимит освобождения снижается с 60 до 10 млн!</p>
                     </>
-                  ) : taxSystem === 'psn' ? (
-                    <>
-                      <p>• ПСН - патентная система налогообложения (только для ИП)</p>
-                      <p>• 2025: доход до 60 млн ₽, персонал до 15 человек</p>
-                      <p>• 2026: доход снижен до 10 млн ₽, исключены розница и грузоперевозки</p>
-                      <p>• НДС не уплачивается при использовании патента</p>
-                      <p className="font-semibold text-red-700 mt-2">⚠ При превышении лимита переход на УСН/ОСН с уплатой НДС!</p>
-                    </>
-                  ) : taxSystem === 'ausn' ? (
-                    <>
-                      <p>• АУСН - автоматизированная упрощённая система (для ИП и ООО)</p>
-                      <p>• Доход до 60 млн ₽, численность до 5 человек</p>
-                      <p>• Доступна с 2025 года во всех регионах РФ</p>
-                      <p>• НДС не уплачивается, страховые взносы не платятся</p>
-                      <p>• Автоматический учёт доходов/расходов в личном кабинете</p>
-                      <p className="font-semibold text-green-700 mt-2">✓ Ставки не изменяются в 2026 году</p>
-                    </>
-                  ) : null}
+                  )}
                 </div>
               </div>
             </div>
