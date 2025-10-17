@@ -183,8 +183,8 @@ const VATCalculator = () => {
               </div>
 
               <TooltipProvider>
-                <Tabs value={taxSystem} onValueChange={(v) => setTaxSystem(v as 'general' | 'usn' | 'psn' | 'ausn')}>
-                  <TabsList className="grid w-full grid-cols-4">
+                <Tabs value={taxSystem} onValueChange={(v) => setTaxSystem(v as 'general' | 'usn')}>
+                  <TabsList className="grid w-full grid-cols-2">
                     <Tooltip>
                       <TooltipTrigger asChild>
                         <TabsTrigger value="general">ОСН</TabsTrigger>
