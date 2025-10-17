@@ -188,6 +188,16 @@ const OKVEDCalculator = () => {
                         <SelectItem value="20" className="rounded-xl py-3 focus:bg-gray-50">20%</SelectItem>
                       </SelectContent>
                     </Select>
+                    {vatRate2025 === 0 && (
+                      <p className="text-xs text-gray-400 font-light mt-2 animate-in fade-in duration-300">
+                        Экспорт, международные перевозки, товары в свободной таможенной зоне
+                      </p>
+                    )}
+                    {vatRate2025 === 10 && (
+                      <p className="text-xs text-gray-400 font-light mt-2 animate-in fade-in duration-300">
+                        Продовольствие, детские товары, медицина, книги и периодика
+                      </p>
+                    )}
                     {vatRate2025 === 20 && (
                       <p className="text-xs text-gray-400 font-light mt-2 animate-in fade-in duration-300">
                         В 2026 повысится до 22%
