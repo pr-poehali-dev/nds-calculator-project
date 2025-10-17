@@ -19,12 +19,13 @@ const VATCalculator = () => {
   const [okvedCode, setOkvedCode] = useState<string>('');
   const [okvedList, setOkvedList] = useState<OKVEDItem[]>([]);
   const [searchQuery, setSearchQuery] = useState<string>('');
-  const [taxSystem, setTaxSystem] = useState<'general' | 'usn' | 'psn'>('general');
+  const [taxSystem, setTaxSystem] = useState<'general' | 'usn' | 'psn' | 'ausn'>('general');
   const [vatRate2025, setVatRate2025] = useState<number>(20);
   const [vatRate2026, setVatRate2026] = useState<number>(22);
   const [usnRevenue, setUsnRevenue] = useState<number>(100);
   const [generalRevenue, setGeneralRevenue] = useState<number>(10);
   const [psnRevenue, setPsnRevenue] = useState<number>(30);
+  const [ausnRevenue, setAusnRevenue] = useState<number>(30);
   const [isExempt2025, setIsExempt2025] = useState<boolean>(false);
   const [isExempt2026, setIsExempt2026] = useState<boolean>(false);
   const [psnAvailable2025, setPsnAvailable2025] = useState<boolean>(true);
@@ -113,8 +114,18 @@ const VATCalculator = () => {
         setPsnAvailable2026(false);
         setIsExempt2026(false);
       }
+    } else if (taxSystem === 'ausn') {
+      if (ausnRevenue <= 60) {
+        setIsExempt2025(true);
+        setIsExempt2026(true);
+        setVatRate2025(0);
+        setVatRate2026(0);
+      } else {
+        setIsExempt2025(false);
+        setIsExempt2026(false);
+      }
     }
-  }, [taxSystem, usnRevenue, generalRevenue, psnRevenue]);
+  }, [taxSystem, usnRevenue, generalRevenue, psnRevenue, ausnRevenue]);
 
   const filteredOKVED = okvedList.filter(item =>
     item.code.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -203,8 +214,8 @@ const VATCalculator = () => {
               </div>
 
               <TooltipProvider>
-                <Tabs value={taxSystem} onValueChange={(v) => setTaxSystem(v as 'general' | 'usn' | 'psn')}>
-                  <TabsList className="grid w-full grid-cols-3">
+                <Tabs value={taxSystem} onValueChange={(v) => setTaxSystem(v as 'general' | 'usn' | 'psn' | 'ausn')}>
+                  <TabsList className="grid w-full grid-cols-4">
                     <Tooltip>
                       <TooltipTrigger asChild>
                         <TabsTrigger value="general">ОСН</TabsTrigger>
@@ -232,6 +243,16 @@ const VATCalculator = () => {
                       <TooltipContent>
                         <p className="font-semibold">Патентная система налогообложения</p>
                         <p className="text-xs mt-1">Только для ИП. Покупка патента на вид деятельности</p>
+                      </TooltipContent>
+                    </Tooltip>
+                    
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <TabsTrigger value="ausn">АУСН</TabsTrigger>
+                      </TooltipTrigger>
+                      <TooltipContent>
+                        <p className="font-semibold">Автоматизированная упрощённая система</p>
+                        <p className="text-xs mt-1">Спецрежим с автоматическим учётом для ИП и ООО</p>
                       </TooltipContent>
                     </Tooltip>
                   </TabsList>
@@ -369,6 +390,41 @@ const VATCalculator = () => {
                     </div>
                   </div>
                 </TabsContent>
+
+                <TabsContent value="ausn" className="space-y-4 mt-4">
+                  <div>
+                    <Label htmlFor="ausnRevenue">Годовой доход (млн ₽)</Label>
+                    <Input
+                      id="ausnRevenue"
+                      type="number"
+                      placeholder="Введите доход"
+                      value={ausnRevenue}
+                      onChange={(e) => setAusnRevenue(parseFloat(e.target.value) || 0)}
+                      className="mt-2"
+                    />
+                    {ausnRevenue <= 60 ? (
+                      <div className="mt-2 p-3 bg-green-50 border border-green-200 rounded-lg">
+                        <p className="text-sm text-green-800 font-medium">✓ АУСН доступна</p>
+                        <p className="text-xs text-green-700 mt-1">Доход не превышает 60 млн ₽ в год</p>
+                        <p className="text-xs text-green-700">НДС не уплачивается при АУСН</p>
+                      </div>
+                    ) : (
+                      <div className="mt-2 p-3 bg-red-50 border border-red-200 rounded-lg">
+                        <p className="text-sm text-red-800 font-medium">✗ АУСН недоступна</p>
+                        <p className="text-xs text-red-700 mt-1">Доход превышает лимит 60 млн ₽</p>
+                        <p className="text-xs text-red-700">Рассмотрите УСН или ОСН</p>
+                      </div>
+                    )}
+                    <div className="mt-3 p-3 bg-blue-50 border border-blue-200 rounded-lg">
+                      <p className="text-xs text-blue-800 font-medium mb-2">Особенности АУСН:</p>
+                      <p className="text-xs text-blue-700">• Доступна с 2025 года во всех регионах РФ</p>
+                      <p className="text-xs text-blue-700">• Численность работников до 5 человек</p>
+                      <p className="text-xs text-blue-700">• Автоматический учет в личном кабинете</p>
+                      <p className="text-xs text-blue-700">• Не уплачиваются страховые взносы</p>
+                      <p className="text-xs text-blue-700">• Ставка: 8% (доходы) или 20% (доходы-расходы)</p>
+                    </div>
+                  </div>
+                </TabsContent>
                 </Tabs>
               </TooltipProvider>
             </CardContent>
@@ -470,13 +526,16 @@ const VATCalculator = () => {
                       <p>• НДС не уплачивается при использовании патента</p>
                       <p className="font-semibold text-red-700 mt-2">⚠ При превышении лимита переход на УСН/ОСН с уплатой НДС!</p>
                     </>
-                  ) : (
+                  ) : taxSystem === 'ausn' ? (
                     <>
-                      <p>• 0% - при доходе ≤ 60 млн ₽ (требуется уведомление)</p>
-                      <p>• 0% / 10% / 20% (22% с 2026) - при доходе &gt; 60 млн ₽</p>
-                      <p>• ЕСХН - единый сельскохозяйственный налог</p>
+                      <p>• АУСН - автоматизированная упрощённая система (для ИП и ООО)</p>
+                      <p>• Доход до 60 млн ₽, численность до 5 человек</p>
+                      <p>• Доступна с 2025 года во всех регионах РФ</p>
+                      <p>• НДС не уплачивается, страховые взносы не платятся</p>
+                      <p>• Автоматический учёт доходов/расходов в личном кабинете</p>
+                      <p className="font-semibold text-green-700 mt-2">✓ Ставки не изменяются в 2026 году</p>
                     </>
-                  )}
+                  ) : null}
                 </div>
               </div>
             </div>
