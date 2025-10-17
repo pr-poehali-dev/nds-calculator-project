@@ -326,9 +326,6 @@ const OKVEDCalculator = () => {
                         <p className="text-xs text-amber-400 font-semibold">
                           ⚠️ С 2026 года порог УСН снижается до 10 млн ₽
                         </p>
-                        <p className="text-xs text-amber-300/80 mt-1">
-                          При доходе {usnRevenue} млн ₽ в 2025 году УСН не применяется, нужен переход на ОСНО
-                        </p>
                       </div>
                     )}
 
