@@ -14,7 +14,7 @@ const OKVEDCalculator = () => {
   const [okvedList, setOkvedList] = useState<OKVEDItem[]>([]);
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [isDropdownOpen, setIsDropdownOpen] = useState<boolean>(false);
-  const [taxSystem, setTaxSystem] = useState<'general' | 'usn'>('general');
+  const [taxSystem, setTaxSystem] = useState<'general' | 'usn' | 'psn'>('general');
   const [vatRate2025, setVatRate2025] = useState<number>(20);
   const [usnRevenue, setUsnRevenue] = useState<number>(100);
 
@@ -89,10 +89,14 @@ const OKVEDCalculator = () => {
   
   const vat2025Rate = taxSystem === 'usn' 
     ? getUSNRate2025(usnRevenue)
+    : taxSystem === 'psn'
+    ? 6
     : vatRate2025;
   
   const vat2026Rate = taxSystem === 'usn'
     ? getUSNRate2026(usnRevenue)
+    : taxSystem === 'psn'
+    ? 6
     : getVatRate2026(vat2025Rate);
 
   const result2025 = calculateVAT(numAmount, vat2025Rate);
@@ -178,7 +182,7 @@ const OKVEDCalculator = () => {
               </div>
 
               <div className="space-y-5">
-                <div className="flex gap-3 p-1.5 bg-slate-800/40 backdrop-blur-sm rounded-2xl border border-slate-700/30">
+                <div className="flex gap-2 p-1.5 bg-slate-800/40 backdrop-blur-sm rounded-2xl border border-slate-700/30">
                   <button
                     onClick={() => setTaxSystem('general')}
                     className={`flex-1 h-11 rounded-xl font-medium text-sm transition-all duration-300 ${
@@ -198,6 +202,16 @@ const OKVEDCalculator = () => {
                     }`}
                   >
                     УСН
+                  </button>
+                  <button
+                    onClick={() => setTaxSystem('psn')}
+                    className={`flex-1 h-11 rounded-xl font-medium text-sm transition-all duration-300 ${
+                      taxSystem === 'psn'
+                        ? 'bg-gradient-to-r from-emerald-500 to-teal-500 text-white shadow-lg shadow-emerald-500/20'
+                        : 'text-slate-400 hover:text-slate-300'
+                    }`}
+                  >
+                    ПСН
                   </button>
                 </div>
 
@@ -280,6 +294,51 @@ const OKVEDCalculator = () => {
                       <p className="text-xs text-slate-400 font-light mt-2">
                         Ставка 7% (доход превышает 250 млн)
                       </p>
+                    )}
+                  </div>
+                )}
+
+                {taxSystem === 'psn' && (
+                  <div className="space-y-4 animate-in fade-in slide-in-from-top-2 duration-300">
+                    <label className="block text-xs font-semibold text-emerald-400/80 tracking-[0.15em] uppercase">
+                      Доход за год (млн ₽)
+                    </label>
+                    <Input
+                      type="number"
+                      value={usnRevenue}
+                      onChange={(e) => setUsnRevenue(Number(e.target.value))}
+                      onInput={(e) => {
+                        const input = e.target as HTMLInputElement;
+                        if (input.value.startsWith('0') && input.value.length > 1) {
+                          input.value = input.value.replace(/^0+/, '');
+                          setUsnRevenue(Number(input.value));
+                        }
+                      }}
+                      placeholder="30"
+                      className="h-14 border border-slate-700/30 bg-slate-800/40 rounded-2xl text-base px-5 text-white placeholder:text-slate-500 focus-visible:ring-2 focus-visible:ring-emerald-500/40 focus-visible:border-emerald-500/40 transition-all duration-300 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+                    />
+                    
+                    <div className="bg-blue-500/10 border border-blue-500/30 rounded-xl p-4">
+                      <p className="text-xs text-blue-400 font-semibold mb-2">
+                        ℹ️ Патентная система (ПСН)
+                      </p>
+                      <ul className="text-xs text-blue-300/80 space-y-1">
+                        <li>• Фиксированная ставка 6%</li>
+                        <li>• Лимит дохода до 60 млн ₽/год</li>
+                        <li>• Только для ИП</li>
+                        <li>• Не более 15 работников</li>
+                      </ul>
+                    </div>
+
+                    {usnRevenue > 60 && (
+                      <div className="bg-red-500/10 border border-red-500/30 rounded-xl p-4">
+                        <p className="text-xs text-red-400 font-semibold">
+                          ⚠️ Превышен лимит ПСН
+                        </p>
+                        <p className="text-xs text-red-300/80 mt-1">
+                          При доходе {usnRevenue} млн ₽ патент не применяется (максимум 60 млн)
+                        </p>
+                      </div>
                     )}
                   </div>
                 )}
