@@ -5,7 +5,7 @@
     "path": "/",
     "expectedStatus": 200,
     "expectedBody": {
-      "count": 30
+      "count": 132
     },
     "bodyMatcher": "partial"
   }]
