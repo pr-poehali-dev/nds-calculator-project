@@ -185,7 +185,7 @@ const OKVEDCalculator = () => {
               </div>
 
               <div className="space-y-5">
-                <label className="text-sm font-medium text-slate-300">Налоговый режим</label>
+                <label className="block text-xs font-semibold text-emerald-400/80 tracking-[0.15em] uppercase">Налоговый режим</label>
                 <div className="flex gap-2 p-1.5 bg-slate-800/40 backdrop-blur-sm rounded-2xl border border-slate-700/30">
                   <button
                     onClick={() => setTaxSystem('general')}
