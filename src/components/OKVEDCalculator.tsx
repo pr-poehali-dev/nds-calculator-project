@@ -255,16 +255,10 @@ const OKVEDCalculator = () => {
                       <label className="block text-xs font-semibold text-emerald-400/80 tracking-[0.15em] uppercase">
                         Ставка НДС 2025
                       </label>
-                      <Select value={String(vatRate2025)} onValueChange={(v) => setVatRate2025(Number(v))}>
-                        <SelectTrigger className="h-14 border border-slate-700/30 bg-slate-800/40 rounded-2xl text-white focus:ring-2 focus:ring-emerald-500/40">
-                          <SelectValue />
-                        </SelectTrigger>
-                        <SelectContent className="bg-slate-900 border-slate-700/50 text-white rounded-xl">
-                          <SelectItem value="0" className="hover:bg-slate-800 cursor-pointer rounded-lg">0%</SelectItem>
-                          <SelectItem value="10" className="hover:bg-slate-800 cursor-pointer rounded-lg">10%</SelectItem>
-                          <SelectItem value="20" className="hover:bg-slate-800 cursor-pointer rounded-lg">20%</SelectItem>
-                        </SelectContent>
-                      </Select>
+                      <div className="h-14 border border-slate-700/30 bg-slate-800/40 rounded-2xl flex items-center px-5">
+                        <span className="text-white text-base font-medium">{vatRate2025}%</span>
+                        <span className="ml-auto text-slate-500 text-sm">автоматически по ОКВЭД</span>
+                      </div>
                     </div>
                   </div>
                 )}
@@ -312,6 +306,16 @@ const OKVEDCalculator = () => {
                           </p>
                         </div>
                       )}
+                    </div>
+
+                    <div className="space-y-4">
+                      <label className="block text-xs font-semibold text-emerald-400/80 tracking-[0.15em] uppercase">
+                        Ставка НДС 2025
+                      </label>
+                      <div className="h-14 border border-slate-700/30 bg-slate-800/40 rounded-2xl flex items-center px-5">
+                        <span className="text-white text-base font-medium">{vat2025Rate}%</span>
+                        <span className="ml-auto text-slate-500 text-sm">автоматически</span>
+                      </div>
                     </div>
 
                     {usnRevenue >= 10 && usnRevenue < 60 && (
@@ -381,6 +385,16 @@ const OKVEDCalculator = () => {
                           </p>
                         </div>
                       )}
+                    </div>
+
+                    <div className="space-y-4">
+                      <label className="block text-xs font-semibold text-emerald-400/80 tracking-[0.15em] uppercase">
+                        Ставка НДС 2025
+                      </label>
+                      <div className="h-14 border border-slate-700/30 bg-slate-800/40 rounded-2xl flex items-center px-5">
+                        <span className="text-white text-base font-medium">{vat2025Rate}%</span>
+                        <span className="ml-auto text-slate-500 text-sm">автоматически</span>
+                      </div>
                     </div>
                     
                     <div className="bg-blue-500/10 border border-blue-500/30 rounded-xl p-4">
