@@ -18,6 +18,7 @@ const OKVEDCalculator = () => {
   const [vatRate2025, setVatRate2025] = useState<number>(20);
   const [usnRevenue, setUsnRevenue] = useState<number>(100);
   const [employeeCount, setEmployeeCount] = useState<number>(5);
+  const [showAdvancedOptions, setShowAdvancedOptions] = useState<boolean>(false);
 
   useEffect(() => {
     loadOKVED();
@@ -241,28 +242,40 @@ const OKVEDCalculator = () => {
                       />
                     </div>
 
-                    <div className="space-y-4">
-                      <label className="block text-xs font-semibold text-emerald-400/80 tracking-[0.15em] uppercase">
-                        Количество сотрудников
-                      </label>
-                      <Input
-                        type="number"
-                        value={employeeCount}
-                        onChange={(e) => setEmployeeCount(Number(e.target.value))}
-                        placeholder="5"
-                        className="h-14 border border-slate-700/30 bg-slate-800/40 rounded-2xl text-base px-5 text-white placeholder:text-slate-500 focus-visible:ring-2 focus-visible:ring-emerald-500/40 focus-visible:border-emerald-500/40 transition-all duration-300 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
-                      />
-                    </div>
-                    
-                    <div className="space-y-4">
-                      <label className="block text-xs font-semibold text-emerald-400/80 tracking-[0.15em] uppercase">
-                        Ставка НДС 2025
-                      </label>
-                      <div className="h-14 border border-slate-700/30 bg-slate-800/40 rounded-2xl flex items-center px-5">
-                        <span className="text-white text-base font-medium">{vatRate2025}%</span>
-                        <span className="ml-auto text-slate-500 text-sm">автоматически по ОКВЭД</span>
+                    <button
+                      onClick={() => setShowAdvancedOptions(!showAdvancedOptions)}
+                      className="w-full text-left text-sm text-slate-400 hover:text-slate-300 transition-colors flex items-center gap-2"
+                    >
+                      <span>{showAdvancedOptions ? '▼' : '▶'}</span>
+                      <span>Дополнительные параметры</span>
+                    </button>
+
+                    {showAdvancedOptions && (
+                      <div className="space-y-6 animate-in fade-in slide-in-from-top-2 duration-300">
+                        <div className="space-y-4">
+                          <label className="block text-xs font-semibold text-emerald-400/80 tracking-[0.15em] uppercase">
+                            Количество сотрудников
+                          </label>
+                          <Input
+                            type="number"
+                            value={employeeCount}
+                            onChange={(e) => setEmployeeCount(Number(e.target.value))}
+                            placeholder="5"
+                            className="h-14 border border-slate-700/30 bg-slate-800/40 rounded-2xl text-base px-5 text-white placeholder:text-slate-500 focus-visible:ring-2 focus-visible:ring-emerald-500/40 focus-visible:border-emerald-500/40 transition-all duration-300 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+                          />
+                        </div>
+                        
+                        <div className="space-y-4">
+                          <label className="block text-xs font-semibold text-emerald-400/80 tracking-[0.15em] uppercase">
+                            Ставка НДС 2025
+                          </label>
+                          <div className="h-14 border border-slate-700/30 bg-slate-800/40 rounded-2xl flex items-center px-5">
+                            <span className="text-white text-base font-medium">{vatRate2025}%</span>
+                            <span className="ml-auto text-slate-500 text-sm">автоматически по ОКВЭД</span>
+                          </div>
+                        </div>
                       </div>
-                    </div>
+                    )}
                   </div>
                 )}
 
@@ -288,38 +301,50 @@ const OKVEDCalculator = () => {
                       />
                     </div>
 
-                    <div className="space-y-4">
-                      <label className="block text-xs font-semibold text-emerald-400/80 tracking-[0.15em] uppercase">
-                        Количество сотрудников
-                      </label>
-                      <Input
-                        type="number"
-                        value={employeeCount}
-                        onChange={(e) => setEmployeeCount(Number(e.target.value))}
-                        placeholder="5"
-                        className="h-14 border border-slate-700/30 bg-slate-800/40 rounded-2xl text-base px-5 text-white placeholder:text-slate-500 focus-visible:ring-2 focus-visible:ring-emerald-500/40 focus-visible:border-emerald-500/40 transition-all duration-300 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
-                      />
-                      {employeeCount > 130 && (
-                        <div className="bg-red-500/10 border border-red-500/30 rounded-xl p-4">
-                          <p className="text-xs text-red-400 font-semibold">
-                            ⚠️ Превышен лимит УСН
-                          </p>
-                          <p className="text-xs text-red-300/80 mt-1">
-                            При количестве сотрудников {employeeCount} УСН не применяется (максимум 130 чел.)
-                          </p>
-                        </div>
-                      )}
-                    </div>
+                    <button
+                      onClick={() => setShowAdvancedOptions(!showAdvancedOptions)}
+                      className="w-full text-left text-sm text-slate-400 hover:text-slate-300 transition-colors flex items-center gap-2"
+                    >
+                      <span>{showAdvancedOptions ? '▼' : '▶'}</span>
+                      <span>Дополнительные параметры</span>
+                    </button>
 
-                    <div className="space-y-4">
-                      <label className="block text-xs font-semibold text-emerald-400/80 tracking-[0.15em] uppercase">
-                        Ставка НДС 2025
-                      </label>
-                      <div className="h-14 border border-slate-700/30 bg-slate-800/40 rounded-2xl flex items-center px-5">
-                        <span className="text-white text-base font-medium">{vat2025Rate}%</span>
-                        <span className="ml-auto text-slate-500 text-sm">автоматически</span>
+                    {showAdvancedOptions && (
+                      <div className="space-y-6 animate-in fade-in slide-in-from-top-2 duration-300">
+                        <div className="space-y-4">
+                          <label className="block text-xs font-semibold text-emerald-400/80 tracking-[0.15em] uppercase">
+                            Количество сотрудников
+                          </label>
+                          <Input
+                            type="number"
+                            value={employeeCount}
+                            onChange={(e) => setEmployeeCount(Number(e.target.value))}
+                            placeholder="5"
+                            className="h-14 border border-slate-700/30 bg-slate-800/40 rounded-2xl text-base px-5 text-white placeholder:text-slate-500 focus-visible:ring-2 focus-visible:ring-emerald-500/40 focus-visible:border-emerald-500/40 transition-all duration-300 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+                          />
+                          {employeeCount > 130 && (
+                            <div className="bg-red-500/10 border border-red-500/30 rounded-xl p-4">
+                              <p className="text-xs text-red-400 font-semibold">
+                                ⚠️ Превышен лимит УСН
+                              </p>
+                              <p className="text-xs text-red-300/80 mt-1">
+                                При количестве сотрудников {employeeCount} УСН не применяется (максимум 130 чел.)
+                              </p>
+                            </div>
+                          )}
+                        </div>
+
+                        <div className="space-y-4">
+                          <label className="block text-xs font-semibold text-emerald-400/80 tracking-[0.15em] uppercase">
+                            Ставка НДС 2025
+                          </label>
+                          <div className="h-14 border border-slate-700/30 bg-slate-800/40 rounded-2xl flex items-center px-5">
+                            <span className="text-white text-base font-medium">{vat2025Rate}%</span>
+                            <span className="ml-auto text-slate-500 text-sm">автоматически</span>
+                          </div>
+                        </div>
                       </div>
-                    </div>
+                    )}
 
                     {usnRevenue >= 10 && usnRevenue < 60 && (
                       <div className="bg-amber-500/10 border border-amber-500/30 rounded-xl p-4">
@@ -365,38 +390,50 @@ const OKVEDCalculator = () => {
                       />
                     </div>
 
-                    <div className="space-y-4">
-                      <label className="block text-xs font-semibold text-emerald-400/80 tracking-[0.15em] uppercase">
-                        Количество сотрудников
-                      </label>
-                      <Input
-                        type="number"
-                        value={employeeCount}
-                        onChange={(e) => setEmployeeCount(Number(e.target.value))}
-                        placeholder="5"
-                        className="h-14 border border-slate-700/30 bg-slate-800/40 rounded-2xl text-base px-5 text-white placeholder:text-slate-500 focus-visible:ring-2 focus-visible:ring-emerald-500/40 focus-visible:border-emerald-500/40 transition-all duration-300 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
-                      />
-                      {employeeCount > 15 && (
-                        <div className="bg-red-500/10 border border-red-500/30 rounded-xl p-4">
-                          <p className="text-xs text-red-400 font-semibold">
-                            ⚠️ Превышен лимит ПСН
-                          </p>
-                          <p className="text-xs text-red-300/80 mt-1">
-                            При количестве сотрудников {employeeCount} патент не применяется (максимум 15 чел.)
-                          </p>
-                        </div>
-                      )}
-                    </div>
+                    <button
+                      onClick={() => setShowAdvancedOptions(!showAdvancedOptions)}
+                      className="w-full text-left text-sm text-slate-400 hover:text-slate-300 transition-colors flex items-center gap-2"
+                    >
+                      <span>{showAdvancedOptions ? '▼' : '▶'}</span>
+                      <span>Дополнительные параметры</span>
+                    </button>
 
-                    <div className="space-y-4">
-                      <label className="block text-xs font-semibold text-emerald-400/80 tracking-[0.15em] uppercase">
-                        Ставка НДС 2025
-                      </label>
-                      <div className="h-14 border border-slate-700/30 bg-slate-800/40 rounded-2xl flex items-center px-5">
-                        <span className="text-white text-base font-medium">{vat2025Rate}%</span>
-                        <span className="ml-auto text-slate-500 text-sm">автоматически</span>
+                    {showAdvancedOptions && (
+                      <div className="space-y-6 animate-in fade-in slide-in-from-top-2 duration-300">
+                        <div className="space-y-4">
+                          <label className="block text-xs font-semibold text-emerald-400/80 tracking-[0.15em] uppercase">
+                            Количество сотрудников
+                          </label>
+                          <Input
+                            type="number"
+                            value={employeeCount}
+                            onChange={(e) => setEmployeeCount(Number(e.target.value))}
+                            placeholder="5"
+                            className="h-14 border border-slate-700/30 bg-slate-800/40 rounded-2xl text-base px-5 text-white placeholder:text-slate-500 focus-visible:ring-2 focus-visible:ring-emerald-500/40 focus-visible:border-emerald-500/40 transition-all duration-300 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+                          />
+                          {employeeCount > 15 && (
+                            <div className="bg-red-500/10 border border-red-500/30 rounded-xl p-4">
+                              <p className="text-xs text-red-400 font-semibold">
+                                ⚠️ Превышен лимит ПСН
+                              </p>
+                              <p className="text-xs text-red-300/80 mt-1">
+                                При количестве сотрудников {employeeCount} патент не применяется (максимум 15 чел.)
+                              </p>
+                            </div>
+                          )}
+                        </div>
+
+                        <div className="space-y-4">
+                          <label className="block text-xs font-semibold text-emerald-400/80 tracking-[0.15em] uppercase">
+                            Ставка НДС 2025
+                          </label>
+                          <div className="h-14 border border-slate-700/30 bg-slate-800/40 rounded-2xl flex items-center px-5">
+                            <span className="text-white text-base font-medium">{vat2025Rate}%</span>
+                            <span className="ml-auto text-slate-500 text-sm">автоматически</span>
+                          </div>
+                        </div>
                       </div>
-                    </div>
+                    )}
 
                     {usnRevenue > 60 && (
                       <div className="bg-red-500/10 border border-red-500/30 rounded-xl p-4">
