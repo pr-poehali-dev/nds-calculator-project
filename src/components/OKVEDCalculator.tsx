@@ -64,15 +64,19 @@ const OKVEDCalculator = () => {
     return 20;
   };
 
-  const getUSNRate2025 = (revenue: number): number => {
-    if (revenue >= 60 && revenue <= 250) return 5;
-    if (revenue > 250 && revenue <= 450) return 7;
+  const getUSNRate2025 = (revenue: number, employees: number): number => {
+    if (revenue < 60) return 0;
+    if (revenue > 450 || employees > 130) return 0;
+    if (revenue <= 250 && employees <= 100) return 6;
+    if (revenue > 250 && revenue <= 450 && employees > 100 && employees <= 130) return 8;
     return 0;
   };
 
-  const getUSNRate2026 = (revenue: number): number => {
-    if (revenue >= 10 && revenue <= 250) return 5;
-    if (revenue > 250 && revenue <= 450) return 7;
+  const getUSNRate2026 = (revenue: number, employees: number): number => {
+    if (revenue < 10) return 0;
+    if (revenue > 450 || employees > 130) return 0;
+    if (revenue <= 250 && employees <= 100) return 6;
+    if (revenue > 250 && revenue <= 450 && employees > 100 && employees <= 130) return 8;
     return 0;
   };
 
@@ -89,13 +93,13 @@ const OKVEDCalculator = () => {
   const numAmount = parseFloat(amount) || 0;
   
   const vat2025Rate = taxSystem === 'usn' 
-    ? getUSNRate2025(usnRevenue)
+    ? getUSNRate2025(usnRevenue, employeeCount)
     : taxSystem === 'psn'
     ? 6
     : vatRate2025;
   
   const vat2026Rate = taxSystem === 'usn'
-    ? getUSNRate2026(usnRevenue)
+    ? getUSNRate2026(usnRevenue, employeeCount)
     : taxSystem === 'psn'
     ? 6
     : getVatRate2026(vat2025Rate);
@@ -318,8 +322,21 @@ const OKVEDCalculator = () => {
                       </div>
                     </div>
 
+                    <div className="bg-blue-500/10 border border-blue-500/30 rounded-xl p-4">
+                      <p className="text-xs text-blue-400 font-semibold mb-2">
+                        ℹ️ Упрощенная система налогообложения (УСН)
+                      </p>
+                      <ul className="text-xs text-blue-300/80 space-y-1">
+                        <li>• Базовая ставка: 6%</li>
+                        <li>• Повышенная ставка: 8% (при доходе 250-450 млн или 100-130 сотрудников)</li>
+                        <li>• Лимит дохода: до 450 млн ₽/год</li>
+                        <li>• Макс. сотрудников: 130 человек</li>
+                        <li>• Только для ИП и ООО</li>
+                      </ul>
+                    </div>
+
                     {usnRevenue >= 10 && usnRevenue < 60 && (
-                      <div className="bg-amber-500/10 border border-amber-500/30 rounded-xl p-4 mt-2">
+                      <div className="bg-amber-500/10 border border-amber-500/30 rounded-xl p-4">
                         <p className="text-xs text-amber-400 font-semibold">
                           ⚠️ С 2026 года порог УСН снижается до 10 млн ₽
                         </p>
@@ -328,16 +345,17 @@ const OKVEDCalculator = () => {
                         </p>
                       </div>
                     )}
-                    {usnRevenue >= 60 && usnRevenue <= 250 && (
-                      <div className="text-xs text-slate-400 font-light mt-2 space-y-1">
-                        <p>2025: Ставка 5%</p>
-                        <p className="text-emerald-400">2026: Ставка 5% (порог снизился до 10 млн)</p>
+
+                    {(usnRevenue > 450 || employeeCount > 130) && (
+                      <div className="bg-red-500/10 border border-red-500/30 rounded-xl p-4">
+                        <p className="text-xs text-red-400 font-semibold">
+                          ⚠️ Превышены лимиты УСН
+                        </p>
+                        <p className="text-xs text-red-300/80 mt-1">
+                          {usnRevenue > 450 && `Доход ${usnRevenue} млн ₽ превышает лимит 450 млн. `}
+                          {employeeCount > 130 && `Сотрудников ${employeeCount} превышает лимит 130 чел.`}
+                        </p>
                       </div>
-                    )}
-                    {usnRevenue > 250 && usnRevenue <= 450 && (
-                      <p className="text-xs text-slate-400 font-light mt-2">
-                        Ставка 7% (доход превышает 250 млн)
-                      </p>
                     )}
                   </div>
                 )}
