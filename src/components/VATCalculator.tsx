@@ -229,7 +229,7 @@ const VATCalculator = () => {
                       </Select>
                       <p className="text-sm text-muted-foreground mt-2">
                         {vatRate2025 === 20 
-                          ? 'В 2026 году ставка изменится на 22%'
+                          ? 'В 2026 году ставка повысится до 22%'
                           : 'Ставка не изменится в 2026 году'}
                       </p>
                     </div>
