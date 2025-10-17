@@ -177,22 +177,6 @@ const OKVEDCalculator = () => {
                 )}
               </div>
 
-              <div className="space-y-4">
-                <label className="block text-xs font-semibold text-emerald-400/80 tracking-[0.15em] uppercase">
-                  Сумма без НДС
-                </label>
-                <div className="relative group">
-                  <Input
-                    type="number"
-                    value={amount}
-                    onChange={(e) => setAmount(e.target.value)}
-                    placeholder="100 000"
-                    className="h-14 border border-slate-700/30 bg-slate-800/40 backdrop-blur-sm rounded-2xl text-base pr-16 px-5 text-white placeholder:text-slate-500 focus-visible:ring-2 focus-visible:ring-emerald-500/40 focus-visible:border-emerald-500/40 transition-all duration-300 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
-                  />
-                  <span className="absolute right-5 top-1/2 -translate-y-1/2 text-slate-500 font-light text-base">₽</span>
-                </div>
-              </div>
-
               <div className="space-y-5">
                 <div className="flex gap-3 p-1.5 bg-slate-800/40 backdrop-blur-sm rounded-2xl border border-slate-700/30">
                   <button
