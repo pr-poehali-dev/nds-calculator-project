@@ -400,18 +400,6 @@ const OKVEDCalculator = () => {
                         <span className="ml-auto text-slate-500 text-sm">автоматически</span>
                       </div>
                     </div>
-                    
-                    <div className="bg-blue-500/10 border border-blue-500/30 rounded-xl p-4">
-                      <p className="text-xs text-blue-400 font-semibold mb-2">
-                        ℹ️ Патентная система (ПСН)
-                      </p>
-                      <ul className="text-xs text-blue-300/80 space-y-1">
-                        <li>• Фиксированная ставка 6%</li>
-                        <li>• Лимит дохода до 60 млн ₽/год</li>
-                        <li>• Только для ИП</li>
-                        <li>• Не более 15 работников</li>
-                      </ul>
-                    </div>
 
                     {usnRevenue > 60 && (
                       <div className="bg-red-500/10 border border-red-500/30 rounded-xl p-4">
