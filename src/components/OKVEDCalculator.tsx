@@ -297,15 +297,7 @@ const OKVEDCalculator = () => {
                           />
                         </div>
                         
-                        <div className="space-y-4">
-                          <label className="block text-xs font-semibold text-emerald-400/80 tracking-[0.15em] uppercase">
-                            Ставка НДС 2025
-                          </label>
-                          <div className="h-14 border border-slate-700/30 bg-slate-800/40 rounded-2xl flex items-center px-5">
-                            <span className="text-white text-base font-medium">{vatRate2025}%</span>
-                            <span className="ml-auto text-slate-500 text-sm">автоматически по ОКВЭД</span>
-                          </div>
-                        </div>
+
                       </div>
                     )}
                   </div>
@@ -364,16 +356,6 @@ const OKVEDCalculator = () => {
                               </p>
                             </div>
                           )}
-                        </div>
-
-                        <div className="space-y-4">
-                          <label className="block text-xs font-semibold text-emerald-400/80 tracking-[0.15em] uppercase">
-                            Ставка НДС 2025
-                          </label>
-                          <div className="h-14 border border-slate-700/30 bg-slate-800/40 rounded-2xl flex items-center px-5">
-                            <span className="text-white text-base font-medium">{vat2025Rate}%</span>
-                            <span className="ml-auto text-slate-500 text-sm">автоматически</span>
-                          </div>
                         </div>
                       </div>
                     )}
