@@ -441,38 +441,36 @@ const OKVEDCalculator = () => {
             </div>
           </Card>
 
-          <Card className={`border ${
-            vat2026Rate > vat2025Rate 
-              ? 'border-red-500/30 bg-gradient-to-br from-red-950/30 to-slate-900/30' 
-              : vat2026Rate < vat2025Rate
-              ? 'border-emerald-500/30 bg-gradient-to-br from-emerald-950/30 to-slate-900/30'
-              : 'border-slate-700/30 bg-gradient-to-br from-slate-900/30 to-slate-900/30'
-          } backdrop-blur-xl shadow-2xl rounded-3xl overflow-hidden p-8`}>
-            <div className="space-y-6">
-              <div className="text-xs font-semibold text-slate-400 tracking-[0.15em] uppercase">
+          <Card className="border border-slate-800/50 bg-gradient-to-br from-slate-900/90 to-slate-900/50 backdrop-blur-xl shadow-2xl rounded-3xl overflow-hidden transition-all duration-500 hover:border-slate-700/50 hover:shadow-emerald-500/5">
+            <div className="p-8 space-y-6">
+              <div className="text-xs font-semibold text-emerald-400/80 tracking-[0.15em] uppercase">
                 Сравнение ставок
               </div>
               
-              <div className="grid grid-cols-2 gap-6">
-                <div>
-                  <div className="text-sm text-slate-400 mb-3">2025</div>
-                  <div className="text-5xl font-light text-white tracking-tight">
+              <div className="grid grid-cols-2 gap-8">
+                <div className="space-y-3">
+                  <div className="text-sm text-slate-500 font-medium">2025</div>
+                  <div className="text-6xl font-light text-white/95 tracking-tight">
                     {vat2025Rate}%
                   </div>
                 </div>
                 
-                <div>
-                  <div className="text-sm text-slate-400 mb-3">2026</div>
-                  <div className={`text-5xl font-light tracking-tight ${
-                    vat2026Rate > vat2025Rate 
-                      ? 'text-red-400' 
-                      : vat2026Rate < vat2025Rate 
-                      ? 'text-emerald-400' 
-                      : 'text-white'
-                  }`}>
-                    {vat2026Rate}%
+                <div className="space-y-3">
+                  <div className="text-sm text-slate-500 font-medium">2026</div>
+                  <div className="flex items-baseline gap-2">
+                    <div className={`text-6xl font-light tracking-tight ${
+                      vat2026Rate > vat2025Rate 
+                        ? 'text-red-400' 
+                        : vat2026Rate < vat2025Rate 
+                        ? 'text-emerald-400' 
+                        : 'text-white/95'
+                    }`}>
+                      {vat2026Rate}%
+                    </div>
                     {vat2026Rate !== vat2025Rate && (
-                      <span className="text-2xl ml-2">
+                      <span className={`text-3xl font-light ${
+                        vat2026Rate > vat2025Rate ? 'text-red-400' : 'text-emerald-400'
+                      }`}>
                         {vat2026Rate > vat2025Rate ? '↑' : '↓'}
                       </span>
                     )}
@@ -481,19 +479,21 @@ const OKVEDCalculator = () => {
               </div>
 
               {vat2026Rate !== vat2025Rate && (
-                <div className={`mt-4 px-4 py-3 rounded-xl ${
-                  vat2026Rate > vat2025Rate
-                    ? 'bg-red-500/10 border border-red-500/20'
-                    : 'bg-emerald-500/10 border border-emerald-500/20'
-                }`}>
-                  <p className={`text-sm font-medium ${
-                    vat2026Rate > vat2025Rate ? 'text-red-400' : 'text-emerald-400'
+                <div className="pt-4">
+                  <div className={`px-5 py-4 rounded-2xl border ${
+                    vat2026Rate > vat2025Rate
+                      ? 'bg-red-500/10 border-red-500/30'
+                      : 'bg-emerald-500/10 border-emerald-500/30'
                   }`}>
-                    {vat2026Rate > vat2025Rate 
-                      ? `Ставка увеличится на ${vat2026Rate - vat2025Rate}%` 
-                      : `Ставка снизится на ${vat2025Rate - vat2026Rate}%`
-                    }
-                  </p>
+                    <p className={`text-sm font-semibold ${
+                      vat2026Rate > vat2025Rate ? 'text-red-400' : 'text-emerald-400'
+                    }`}>
+                      {vat2026Rate > vat2025Rate 
+                        ? `Ставка увеличится на ${vat2026Rate - vat2025Rate}%` 
+                        : `Ставка снизится на ${vat2025Rate - vat2026Rate}%`
+                      }
+                    </p>
+                  </div>
                 </div>
               )}
             </div>
