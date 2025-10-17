@@ -133,7 +133,7 @@ const OKVEDCalculator = () => {
             Узнать размер НДС для ИП
           </h1>
           <p className="text-lg font-light text-slate-400">
-            2025 vs 2026
+            или как не сесть в тюрьму за неуплату налогов в 2026 году
           </p>
         </div>
 
