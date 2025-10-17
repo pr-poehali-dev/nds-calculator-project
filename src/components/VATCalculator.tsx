@@ -24,7 +24,8 @@ const VATCalculator = () => {
   const [usnRevenue, setUsnRevenue] = useState<number>(100);
   const [generalRevenue, setGeneralRevenue] = useState<number>(10);
   const [eshnRevenue, setEshnRevenue] = useState<number>(30);
-  const [isExempt, setIsExempt] = useState<boolean>(false);
+  const [isExempt2025, setIsExempt2025] = useState<boolean>(false);
+  const [isExempt2026, setIsExempt2026] = useState<boolean>(false);
 
   useEffect(() => {
     const fetchOKVED = async () => {
@@ -57,35 +58,49 @@ const VATCalculator = () => {
   useEffect(() => {
     if (taxSystem === 'usn') {
       if (usnRevenue < 60) {
-        setIsExempt(true);
+        setIsExempt2025(true);
         setVatRate2025(0);
+      } else if (usnRevenue >= 60 && usnRevenue < 250) {
+        setIsExempt2025(false);
+        setVatRate2025(5);
+      } else if (usnRevenue >= 250 && usnRevenue <= 450) {
+        setIsExempt2025(false);
+        setVatRate2025(7);
+      } else {
+        setIsExempt2025(false);
+        setVatRate2025(0);
+      }
+      
+      if (usnRevenue < 10) {
+        setIsExempt2026(true);
         setVatRate2026(0);
       } else if (usnRevenue >= 60 && usnRevenue < 250) {
-        setIsExempt(false);
-        setVatRate2025(5);
+        setIsExempt2026(false);
         setVatRate2026(5);
       } else if (usnRevenue >= 250 && usnRevenue <= 450) {
-        setIsExempt(false);
-        setVatRate2025(7);
+        setIsExempt2026(false);
         setVatRate2026(7);
       } else {
-        setIsExempt(false);
-        setVatRate2025(0);
+        setIsExempt2026(false);
         setVatRate2026(0);
       }
     } else if (taxSystem === 'eshn') {
       if (eshnRevenue <= 60) {
-        setIsExempt(true);
+        setIsExempt2025(true);
+        setIsExempt2026(true);
         setVatRate2025(0);
         setVatRate2026(0);
       } else {
-        setIsExempt(false);
+        setIsExempt2025(false);
+        setIsExempt2026(false);
       }
     } else if (taxSystem === 'general') {
       if (generalRevenue <= 2) {
-        setIsExempt(true);
+        setIsExempt2025(true);
+        setIsExempt2026(true);
       } else {
-        setIsExempt(false);
+        setIsExempt2025(false);
+        setIsExempt2026(false);
       }
     }
   }, [taxSystem, usnRevenue, generalRevenue, eshnRevenue]);
@@ -195,7 +210,7 @@ const VATCalculator = () => {
                       className="mt-2"
                     />
                   </div>
-                  {!isExempt && (
+                  {!isExempt2025 && !isExempt2026 && (
                     <div>
                       <Label htmlFor="rate2025">Ставка НДС (%)</Label>
                       <Select 
@@ -226,7 +241,7 @@ const VATCalculator = () => {
                       </p>
                     </div>
                   )}
-                  {isExempt && (
+                  {(isExempt2025 || isExempt2026) && (
                     <div className="p-3 bg-green-50 border border-green-200 rounded-lg">
                       <p className="text-sm text-green-800 font-medium">✓ Освобождение от НДС</p>
                       <p className="text-xs text-green-700 mt-1">Выручка не превышает 2 млн ₽ за 3 месяца</p>
@@ -245,10 +260,20 @@ const VATCalculator = () => {
                       onChange={(e) => setUsnRevenue(parseFloat(e.target.value) || 0)}
                       className="mt-2"
                     />
-                    {isExempt ? (
+                    {isExempt2025 && isExempt2026 ? (
                       <div className="mt-2 p-3 bg-green-50 border border-green-200 rounded-lg">
                         <p className="text-sm text-green-800 font-medium">✓ Автоматическое освобождение от НДС</p>
-                        <p className="text-xs text-green-700 mt-1">Доход не превышает 60 млн ₽ в год</p>
+                        <p className="text-xs text-green-700 mt-1">Доход не превышает 60 млн ₽ в 2025 и 10 млн ₽ в 2026</p>
+                      </div>
+                    ) : isExempt2025 && !isExempt2026 ? (
+                      <div className="mt-2 p-3 bg-yellow-50 border border-yellow-200 rounded-lg">
+                        <p className="text-sm text-yellow-800 font-medium">⚠ Изменение статуса</p>
+                        <p className="text-xs text-yellow-700 mt-1">2025: освобождение (до 60 млн) | 2026: НДС обязателен (лимит 10 млн)</p>
+                      </div>
+                    ) : !isExempt2025 && isExempt2026 ? (
+                      <div className="mt-2 p-3 bg-blue-50 border border-blue-200 rounded-lg">
+                        <p className="text-sm text-blue-800 font-medium">✓ Освобождение с 2026</p>
+                        <p className="text-xs text-blue-700 mt-1">2025: НДС обязателен | 2026: освобождение (до 10 млн)</p>
                       </div>
                     ) : (
                       <p className="text-sm text-muted-foreground mt-2">
@@ -273,7 +298,7 @@ const VATCalculator = () => {
                       onChange={(e) => setEshnRevenue(parseFloat(e.target.value) || 0)}
                       className="mt-2"
                     />
-                    {isExempt ? (
+                    {isExempt2025 && isExempt2026 ? (
                       <div className="mt-2 p-3 bg-green-50 border border-green-200 rounded-lg">
                         <p className="text-sm text-green-800 font-medium">✓ Возможно освобождение от НДС</p>
                         <p className="text-xs text-green-700 mt-1">Доход не превышает 60 млн ₽. Требуется подать уведомление.</p>
@@ -334,6 +359,9 @@ const VATCalculator = () => {
                 <div className="space-y-2">
                   <p className="text-sm font-medium text-muted-foreground">Ставка НДС</p>
                   <p className="text-3xl font-bold text-blue-900">{vatRate2025}%</p>
+                  {isExempt2025 && (
+                    <Badge className="bg-green-600 text-white">Освобождение</Badge>
+                  )}
                   <div className="pt-2 border-t border-blue-200">
                     <p className="text-xs text-muted-foreground">Сумма НДС</p>
                     <p className="text-xl font-semibold text-blue-800">{vat2025} ₽</p>
@@ -349,6 +377,9 @@ const VATCalculator = () => {
                 <div className="space-y-2">
                   <p className="text-sm font-medium text-muted-foreground">Ставка НДС</p>
                   <p className="text-3xl font-bold text-purple-900">{vatRate2026}%</p>
+                  {isExempt2026 && (
+                    <Badge className="bg-green-600 text-white">Освобождение</Badge>
+                  )}
                   <div className="pt-2 border-t border-purple-200">
                     <p className="text-xs text-muted-foreground">Сумма НДС</p>
                     <p className="text-xl font-semibold text-purple-800">{vat2026} ₽</p>
@@ -392,10 +423,10 @@ const VATCalculator = () => {
                     </>
                   ) : taxSystem === 'usn' ? (
                     <>
-                      <p>• 0% - автоматически при доходе до 60 млн ₽</p>
+                      <p>• 0% - автоматически при доходе до 60 млн ₽ (2025) / до 10 млн ₽ (2026)</p>
                       <p>• 5% - при доходе от 60 до 250 млн рублей</p>
                       <p>• 7% - при доходе от 250 до 450 млн рублей</p>
-                      <p>• Ставки УСН не изменяются в 2026 году</p>
+                      <p className="font-semibold text-orange-700">⚠ ВАЖНО: в 2026 лимит освобождения снижается с 60 до 10 млн!</p>
                     </>
                   ) : (
                     <>
