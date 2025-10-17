@@ -133,7 +133,7 @@ const OKVEDCalculator = () => {
                     value={amount}
                     onChange={(e) => setAmount(e.target.value)}
                     placeholder="100000"
-                    className="h-12 border-0 bg-[#f5f5f7] rounded-xl text-base pr-12 focus-visible:ring-1 focus-visible:ring-[#0071e3]"
+                    className="h-12 border-0 bg-[#f5f5f7] rounded-xl text-base pr-12 focus-visible:ring-1 focus-visible:ring-[#0071e3] [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
                   />
                   <span className="absolute right-4 top-1/2 -translate-y-1/2 text-[#6e6e73] font-light">₽</span>
                 </div>
