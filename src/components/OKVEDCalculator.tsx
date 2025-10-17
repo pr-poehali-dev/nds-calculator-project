@@ -205,6 +205,13 @@ const OKVEDCalculator = () => {
                       type="number"
                       value={usnRevenue}
                       onChange={(e) => setUsnRevenue(Number(e.target.value))}
+                      onInput={(e) => {
+                        const input = e.target as HTMLInputElement;
+                        if (input.value.startsWith('0') && input.value.length > 1) {
+                          input.value = input.value.replace(/^0+/, '');
+                          setUsnRevenue(Number(input.value));
+                        }
+                      }}
                       placeholder="100"
                       className="h-14 border-0 bg-gray-50/50 backdrop-blur-sm rounded-2xl text-base px-5 focus-visible:ring-2 focus-visible:ring-gray-900/10 transition-all duration-300 hover:bg-gray-50 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
                     />
