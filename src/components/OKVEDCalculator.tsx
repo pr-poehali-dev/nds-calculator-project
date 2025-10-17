@@ -258,6 +258,16 @@ const OKVEDCalculator = () => {
                       placeholder="100"
                       className="h-14 border-0 bg-gray-50/50 backdrop-blur-sm rounded-2xl text-base px-5 focus-visible:ring-2 focus-visible:ring-gray-900/10 transition-all duration-300 hover:bg-gray-50 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
                     />
+                    {usnRevenue >= 10 && usnRevenue < 60 && (
+                      <div className="bg-amber-50 border border-amber-200 rounded-xl p-4 mt-2 animate-in fade-in duration-300">
+                        <p className="text-xs text-amber-800 font-medium">
+                          ⚠️ С 2026 года порог УСН снижается до 10 млн ₽
+                        </p>
+                        <p className="text-xs text-amber-700 mt-1">
+                          При доходе {usnRevenue} млн ₽ нужно будет перейти на ОСНО
+                        </p>
+                      </div>
+                    )}
                     {usnRevenue >= 60 && usnRevenue <= 450 && (
                       <p className="text-xs text-gray-400 font-light mt-2 animate-in fade-in duration-300">
                         {usnRevenue >= 60 && usnRevenue <= 250 && 'Ставка 5%'}
