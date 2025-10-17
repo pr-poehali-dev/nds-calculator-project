@@ -114,28 +114,29 @@ const OKVEDCalculator = () => {
   }, [okvedCode, selectedOKVED, taxSystem]);
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-white via-gray-50/30 to-white flex items-center justify-center p-4 sm:p-8">
+    <div className="min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 flex items-center justify-center p-4 sm:p-8">
       <div className="w-full max-w-5xl animate-in fade-in duration-1000">
         
-        <div className="text-center mb-20 space-y-4 animate-in slide-in-from-bottom-4 duration-700">
-          <div className="inline-block">
-            <h1 className="text-7xl sm:text-8xl font-extralight tracking-[-0.02em] text-transparent bg-clip-text bg-gradient-to-br from-gray-900 via-gray-700 to-gray-900">
-              НДС
-            </h1>
-            <div className="h-px bg-gradient-to-r from-transparent via-gray-300 to-transparent mt-6"></div>
+        <div className="text-center mb-16 space-y-6 animate-in slide-in-from-bottom-4 duration-700">
+          <div className="inline-flex items-center gap-3 mb-4">
+            <div className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></div>
+            <span className="text-xs font-medium text-emerald-400/60 tracking-[0.2em] uppercase">НДС Калькулятор</span>
           </div>
-          <p className="text-xl font-light text-gray-500 tracking-wide">
-            Расчёт для 2025 и 2026
+          <h1 className="text-6xl sm:text-7xl font-light tracking-tight text-white/95">
+            Сравнение налогов
+          </h1>
+          <p className="text-lg font-light text-slate-400">
+            2025 vs 2026
           </p>
         </div>
 
-        <div className="space-y-6 animate-in slide-in-from-bottom-8 duration-700 delay-150">
+        <div className="grid lg:grid-cols-2 gap-6 mb-6">
           
-          <Card className="border-0 bg-white/60 backdrop-blur-xl shadow-[0_8px_30px_rgb(0,0,0,0.04)] rounded-3xl overflow-hidden transition-all duration-500 hover:shadow-[0_8px_30px_rgb(0,0,0,0.08)]">
-            <div className="p-8 sm:p-10 space-y-8">
+          <Card className="border border-slate-800/50 bg-gradient-to-br from-slate-900/90 to-slate-900/50 backdrop-blur-xl shadow-2xl rounded-3xl overflow-hidden transition-all duration-500 hover:border-slate-700/50 hover:shadow-emerald-500/5">
+            <div className="p-8 space-y-8">
               
-              <div className="space-y-3">
-                <label className="block text-xs font-medium text-gray-400 tracking-[0.1em] uppercase">
+              <div className="space-y-4">
+                <label className="block text-xs font-semibold text-emerald-400/80 tracking-[0.15em] uppercase">
                   ОКВЭД
                 </label>
                 <div className="relative group">
@@ -146,11 +147,11 @@ const OKVEDCalculator = () => {
                     onFocus={() => setIsDropdownOpen(true)}
                     onBlur={() => setTimeout(() => setIsDropdownOpen(false), 200)}
                     placeholder="Введите код или название"
-                    className="h-14 border-0 bg-gray-50/50 backdrop-blur-sm rounded-2xl text-base px-5 focus-visible:ring-2 focus-visible:ring-gray-900/10 transition-all duration-300 group-hover:bg-gray-50"
+                    className="h-14 border border-slate-700/30 bg-slate-800/40 backdrop-blur-sm rounded-2xl text-base px-5 text-white placeholder:text-slate-500 focus-visible:ring-2 focus-visible:ring-emerald-500/40 focus-visible:border-emerald-500/40 transition-all duration-300"
                   />
                   {isDropdownOpen && (searchQuery ? filteredOKVED : okvedList).length > 0 && (
-                    <div className="absolute w-full mt-2 max-h-72 overflow-auto bg-white/95 backdrop-blur-xl rounded-2xl shadow-[0_20px_60px_rgb(0,0,0,0.12)] z-10 border border-gray-100 animate-in fade-in slide-in-from-top-2 duration-200">
-                      {(searchQuery ? filteredOKVED : okvedList).slice(0, 50).map((item, index) => (
+                    <div className="absolute w-full mt-2 max-h-72 overflow-auto bg-slate-900/98 backdrop-blur-xl rounded-2xl shadow-2xl z-10 border border-slate-700/50">
+                      {(searchQuery ? filteredOKVED : okvedList).slice(0, 50).map((item) => (
                         <button
                           key={item.code}
                           onClick={() => {
@@ -158,27 +159,26 @@ const OKVEDCalculator = () => {
                             setSearchQuery(item.code);
                             setIsDropdownOpen(false);
                           }}
-                          style={{ animationDelay: `${index * 20}ms` }}
-                          className={`w-full text-left px-5 py-4 hover:bg-gray-50 transition-all duration-200 first:rounded-t-2xl last:rounded-b-2xl animate-in fade-in slide-in-from-top-1 ${
-                            okvedCode === item.code ? 'bg-gray-50' : ''
+                          className={`w-full text-left px-5 py-4 hover:bg-slate-800/60 transition-all duration-200 first:rounded-t-2xl last:rounded-b-2xl ${
+                            okvedCode === item.code ? 'bg-slate-800/60 border-l-2 border-emerald-500' : ''
                           }`}
                         >
-                          <span className="font-medium text-gray-900">{item.code}</span>
-                          <span className="text-gray-500 ml-3 text-sm">{item.name}</span>
+                          <span className="font-semibold text-white">{item.code}</span>
+                          <span className="text-slate-400 ml-3 text-sm">{item.name}</span>
                         </button>
                       ))}
                     </div>
                   )}
                 </div>
                 {selectedOKVED && (
-                  <p className="text-sm text-gray-400 font-light mt-3 animate-in fade-in duration-300">
+                  <p className="text-sm text-slate-500 font-light mt-3">
                     {selectedOKVED.code} · {selectedOKVED.name}
                   </p>
                 )}
               </div>
 
-              <div className="space-y-3">
-                <label className="block text-xs font-medium text-gray-400 tracking-[0.1em] uppercase">
+              <div className="space-y-4">
+                <label className="block text-xs font-semibold text-emerald-400/80 tracking-[0.15em] uppercase">
                   Сумма без НДС
                 </label>
                 <div className="relative group">
@@ -187,30 +187,30 @@ const OKVEDCalculator = () => {
                     value={amount}
                     onChange={(e) => setAmount(e.target.value)}
                     placeholder="100 000"
-                    className="h-14 border-0 bg-gray-50/50 backdrop-blur-sm rounded-2xl text-base pr-16 px-5 focus-visible:ring-2 focus-visible:ring-gray-900/10 transition-all duration-300 group-hover:bg-gray-50 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+                    className="h-14 border border-slate-700/30 bg-slate-800/40 backdrop-blur-sm rounded-2xl text-base pr-16 px-5 text-white placeholder:text-slate-500 focus-visible:ring-2 focus-visible:ring-emerald-500/40 focus-visible:border-emerald-500/40 transition-all duration-300 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
                   />
-                  <span className="absolute right-5 top-1/2 -translate-y-1/2 text-gray-400 font-light text-base">₽</span>
+                  <span className="absolute right-5 top-1/2 -translate-y-1/2 text-slate-500 font-light text-base">₽</span>
                 </div>
               </div>
 
               <div className="space-y-5">
-                <div className="flex gap-3 p-1.5 bg-gray-50/50 backdrop-blur-sm rounded-2xl">
+                <div className="flex gap-3 p-1.5 bg-slate-800/40 backdrop-blur-sm rounded-2xl border border-slate-700/30">
                   <button
                     onClick={() => setTaxSystem('general')}
-                    className={`flex-1 py-3.5 px-5 rounded-xl text-sm font-medium transition-all duration-300 ${
+                    className={`flex-1 h-11 rounded-xl font-medium text-sm transition-all duration-300 ${
                       taxSystem === 'general'
-                        ? 'bg-white text-gray-900 shadow-[0_2px_8px_rgb(0,0,0,0.04)]'
-                        : 'text-gray-500 hover:text-gray-700'
+                        ? 'bg-gradient-to-r from-emerald-500 to-teal-500 text-white shadow-lg shadow-emerald-500/20'
+                        : 'text-slate-400 hover:text-slate-300'
                     }`}
                   >
-                    Общая система
+                    ОСНО
                   </button>
                   <button
                     onClick={() => setTaxSystem('usn')}
-                    className={`flex-1 py-3.5 px-5 rounded-xl text-sm font-medium transition-all duration-300 ${
+                    className={`flex-1 h-11 rounded-xl font-medium text-sm transition-all duration-300 ${
                       taxSystem === 'usn'
-                        ? 'bg-white text-gray-900 shadow-[0_2px_8px_rgb(0,0,0,0.04)]'
-                        : 'text-gray-500 hover:text-gray-700'
+                        ? 'bg-gradient-to-r from-emerald-500 to-teal-500 text-white shadow-lg shadow-emerald-500/20'
+                        : 'text-slate-400 hover:text-slate-300'
                     }`}
                   >
                     УСН
@@ -218,44 +218,26 @@ const OKVEDCalculator = () => {
                 </div>
 
                 {taxSystem === 'general' && (
-                  <div className="space-y-3 pt-2 animate-in fade-in slide-in-from-top-2 duration-300">
-                    <label className="block text-xs font-medium text-gray-400 tracking-[0.1em] uppercase">
+                  <div className="space-y-4 animate-in fade-in slide-in-from-top-2 duration-300">
+                    <label className="block text-xs font-semibold text-emerald-400/80 tracking-[0.15em] uppercase">
                       Ставка НДС 2025
                     </label>
-                    <Select
-                      value={vatRate2025.toString()}
-                      onValueChange={(v) => setVatRate2025(Number(v))}
-                    >
-                      <SelectTrigger className="h-14 border-0 bg-gray-50/50 backdrop-blur-sm rounded-2xl text-base focus:ring-2 focus:ring-gray-900/10 transition-all duration-300 hover:bg-gray-50">
+                    <Select value={String(vatRate2025)} onValueChange={(v) => setVatRate2025(Number(v))}>
+                      <SelectTrigger className="h-14 border border-slate-700/30 bg-slate-800/40 rounded-2xl text-white focus:ring-2 focus:ring-emerald-500/40">
                         <SelectValue />
                       </SelectTrigger>
-                      <SelectContent className="rounded-2xl border-0 bg-white/95 backdrop-blur-xl shadow-[0_20px_60px_rgb(0,0,0,0.12)]">
-                        <SelectItem value="0" className="rounded-xl py-3 focus:bg-gray-50">0%</SelectItem>
-                        <SelectItem value="10" className="rounded-xl py-3 focus:bg-gray-50">10%</SelectItem>
-                        <SelectItem value="20" className="rounded-xl py-3 focus:bg-gray-50">20%</SelectItem>
+                      <SelectContent className="bg-slate-900 border-slate-700/50 text-white rounded-xl">
+                        <SelectItem value="0" className="hover:bg-slate-800 cursor-pointer rounded-lg">0%</SelectItem>
+                        <SelectItem value="10" className="hover:bg-slate-800 cursor-pointer rounded-lg">10%</SelectItem>
+                        <SelectItem value="20" className="hover:bg-slate-800 cursor-pointer rounded-lg">20%</SelectItem>
                       </SelectContent>
                     </Select>
-                    {vatRate2025 === 0 && (
-                      <p className="text-xs text-gray-400 font-light mt-2 animate-in fade-in duration-300">
-                        Экспорт, международные перевозки, товары в свободной таможенной зоне
-                      </p>
-                    )}
-                    {vatRate2025 === 10 && (
-                      <p className="text-xs text-gray-400 font-light mt-2 animate-in fade-in duration-300">
-                        Продовольствие, детские товары, медицина, книги и периодика
-                      </p>
-                    )}
-                    {vatRate2025 === 20 && (
-                      <p className="text-xs text-gray-400 font-light mt-2 animate-in fade-in duration-300">
-                        В 2026 повысится до 22%
-                      </p>
-                    )}
                   </div>
                 )}
 
                 {taxSystem === 'usn' && (
-                  <div className="space-y-3 pt-2 animate-in fade-in slide-in-from-top-2 duration-300">
-                    <label className="block text-xs font-medium text-gray-400 tracking-[0.1em] uppercase">
+                  <div className="space-y-4 animate-in fade-in slide-in-from-top-2 duration-300">
+                    <label className="block text-xs font-semibold text-emerald-400/80 tracking-[0.15em] uppercase">
                       Доход за год (млн ₽)
                     </label>
                     <Input
@@ -270,26 +252,26 @@ const OKVEDCalculator = () => {
                         }
                       }}
                       placeholder="100"
-                      className="h-14 border-0 bg-gray-50/50 backdrop-blur-sm rounded-2xl text-base px-5 focus-visible:ring-2 focus-visible:ring-gray-900/10 transition-all duration-300 hover:bg-gray-50 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+                      className="h-14 border border-slate-700/30 bg-slate-800/40 rounded-2xl text-base px-5 text-white placeholder:text-slate-500 focus-visible:ring-2 focus-visible:ring-emerald-500/40 focus-visible:border-emerald-500/40 transition-all duration-300 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
                     />
                     {usnRevenue >= 10 && usnRevenue < 60 && (
-                      <div className="bg-amber-50 border border-amber-200 rounded-xl p-4 mt-2 animate-in fade-in duration-300">
-                        <p className="text-xs text-amber-800 font-medium">
+                      <div className="bg-amber-500/10 border border-amber-500/30 rounded-xl p-4 mt-2">
+                        <p className="text-xs text-amber-400 font-semibold">
                           ⚠️ С 2026 года порог УСН снижается до 10 млн ₽
                         </p>
-                        <p className="text-xs text-amber-700 mt-1">
+                        <p className="text-xs text-amber-300/80 mt-1">
                           При доходе {usnRevenue} млн ₽ в 2025 году УСН не применяется, нужен переход на ОСНО
                         </p>
                       </div>
                     )}
                     {usnRevenue >= 60 && usnRevenue <= 250 && (
-                      <div className="text-xs text-gray-600 font-light mt-2 space-y-1 animate-in fade-in duration-300">
+                      <div className="text-xs text-slate-400 font-light mt-2 space-y-1">
                         <p>2025: Ставка 5%</p>
-                        <p className="text-green-600">2026: Ставка 5% (порог снизился до 10 млн)</p>
+                        <p className="text-emerald-400">2026: Ставка 5% (порог снизился до 10 млн)</p>
                       </div>
                     )}
                     {usnRevenue > 250 && usnRevenue <= 450 && (
-                      <p className="text-xs text-gray-600 font-light mt-2 animate-in fade-in duration-300">
+                      <p className="text-xs text-slate-400 font-light mt-2">
                         Ставка 7% (доход превышает 250 млн)
                       </p>
                     )}
@@ -299,93 +281,93 @@ const OKVEDCalculator = () => {
             </div>
           </Card>
 
-          <div className="grid sm:grid-cols-2 gap-4 sm:gap-6 animate-in slide-in-from-bottom-4 duration-700 delay-300">
-            <Card className="border-0 bg-gradient-to-br from-white to-gray-50/30 backdrop-blur-xl shadow-[0_8px_30px_rgb(0,0,0,0.04)] rounded-3xl overflow-hidden transition-all duration-500 hover:shadow-[0_8px_30px_rgb(0,0,0,0.08)] hover:scale-[1.02]">
-              <div className="p-8 space-y-8">
-                <div className="space-y-2">
-                  <p className="text-xs font-medium text-gray-400 tracking-[0.1em] uppercase">
-                    2025
-                  </p>
-                  <div className="space-y-1">
-                    <p className="text-5xl font-extralight text-gray-900 tracking-tight">
-                      {result2025.total.toLocaleString('ru-RU', { maximumFractionDigits: 0 })}
-                    </p>
-                    <p className="text-sm text-gray-400 font-light">рублей</p>
+          <div className="space-y-6">
+            <Card className="border border-emerald-500/20 bg-gradient-to-br from-emerald-950/40 to-slate-900/40 backdrop-blur-xl shadow-2xl shadow-emerald-500/5 rounded-3xl overflow-hidden p-8">
+              <div className="space-y-6">
+                <div className="flex items-center justify-between">
+                  <span className="text-xs font-semibold text-emerald-400/80 tracking-[0.15em] uppercase">2025</span>
+                  <span className="text-xs font-medium text-emerald-400/60 px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/20">
+                    {vat2025Rate}%
+                  </span>
+                </div>
+                
+                <div>
+                  <div className="text-sm text-slate-400 mb-2">Сумма НДС</div>
+                  <div className="text-4xl font-light text-white tracking-tight">
+                    {result2025.vat.toLocaleString('ru-RU')} ₽
                   </div>
                 </div>
-                <div className="space-y-2 pt-6 border-t border-gray-100">
-                  <div className="flex justify-between text-xs">
-                    <span className="text-gray-400">Ставка</span>
-                    <span className="text-gray-600 font-medium">{vat2025Rate}%</span>
-                  </div>
-                  <div className="flex justify-between text-xs">
-                    <span className="text-gray-400">НДС</span>
-                    <span className="text-gray-600 font-medium">{result2025.vat.toLocaleString('ru-RU', { maximumFractionDigits: 0 })} ₽</span>
+
+                <div className="h-px bg-gradient-to-r from-transparent via-slate-700/50 to-transparent"></div>
+
+                <div>
+                  <div className="text-sm text-slate-400 mb-2">Итого с НДС</div>
+                  <div className="text-3xl font-light text-emerald-400">
+                    {result2025.total.toLocaleString('ru-RU')} ₽
                   </div>
                 </div>
               </div>
             </Card>
 
-            <Card className="border-0 bg-gradient-to-br from-white to-gray-50/30 backdrop-blur-xl shadow-[0_8px_30px_rgb(0,0,0,0.04)] rounded-3xl overflow-hidden transition-all duration-500 hover:shadow-[0_8px_30px_rgb(0,0,0,0.08)] hover:scale-[1.02]">
-              <div className="p-8 space-y-8">
-                <div className="space-y-2">
-                  <p className="text-xs font-medium text-gray-400 tracking-[0.1em] uppercase">
-                    2026
-                  </p>
-                  <div className="space-y-1">
-                    <p className="text-5xl font-extralight text-gray-900 tracking-tight">
-                      {result2026.total.toLocaleString('ru-RU', { maximumFractionDigits: 0 })}
-                    </p>
-                    <p className="text-sm text-gray-400 font-light">рублей</p>
+            <Card className="border border-teal-500/20 bg-gradient-to-br from-teal-950/40 to-slate-900/40 backdrop-blur-xl shadow-2xl shadow-teal-500/5 rounded-3xl overflow-hidden p-8">
+              <div className="space-y-6">
+                <div className="flex items-center justify-between">
+                  <span className="text-xs font-semibold text-teal-400/80 tracking-[0.15em] uppercase">2026</span>
+                  <span className="text-xs font-medium text-teal-400/60 px-3 py-1 rounded-full bg-teal-500/10 border border-teal-500/20">
+                    {vat2026Rate}%
+                  </span>
+                </div>
+                
+                <div>
+                  <div className="text-sm text-slate-400 mb-2">Сумма НДС</div>
+                  <div className="text-4xl font-light text-white tracking-tight">
+                    {result2026.vat.toLocaleString('ru-RU')} ₽
                   </div>
                 </div>
-                <div className="space-y-2 pt-6 border-t border-gray-100">
-                  <div className="flex justify-between text-xs">
-                    <span className="text-gray-400">Ставка</span>
-                    <span className="text-gray-600 font-medium">{vat2026Rate}%</span>
-                  </div>
-                  <div className="flex justify-between text-xs">
-                    <span className="text-gray-400">НДС</span>
-                    <span className="text-gray-600 font-medium">{result2026.vat.toLocaleString('ru-RU', { maximumFractionDigits: 0 })} ₽</span>
+
+                <div className="h-px bg-gradient-to-r from-transparent via-slate-700/50 to-transparent"></div>
+
+                <div>
+                  <div className="text-sm text-slate-400 mb-2">Итого с НДС</div>
+                  <div className="text-3xl font-light text-teal-400">
+                    {result2026.total.toLocaleString('ru-RU')} ₽
                   </div>
                 </div>
               </div>
             </Card>
           </div>
+        </div>
 
-          {difference !== 0 && (
-            <Card className="border-0 bg-gradient-to-br from-gray-900 to-gray-800 backdrop-blur-xl shadow-[0_8px_30px_rgb(0,0,0,0.15)] rounded-3xl overflow-hidden animate-in fade-in slide-in-from-bottom-4 duration-500 delay-500">
-              <div className="p-8">
-                <div className="flex items-center justify-between">
-                  <div className="space-y-1">
-                    <p className="text-xs font-medium text-gray-400 tracking-[0.1em] uppercase">
-                      Разница
-                    </p>
-                    <p className="text-sm text-gray-300 font-light">
-                      Увеличение в 2026 году
-                    </p>
-                  </div>
-                  <div className="text-right space-y-1">
-                    <p className="text-3xl font-light text-white">
-                      +{difference.toLocaleString('ru-RU', { maximumFractionDigits: 0 })}
-                    </p>
-                    <div className="flex items-center gap-2 justify-end">
-                      <span className="text-xs text-gray-400">₽</span>
-                      <span className="text-xs text-gray-400">·</span>
-                      <span className="text-xs text-gray-400">+{((difference / result2025.total) * 100).toFixed(1)}%</span>
-                    </div>
-                  </div>
-                </div>
+        <Card className={`border ${
+          difference > 0 
+            ? 'border-red-500/30 bg-gradient-to-br from-red-950/30 to-slate-900/30' 
+            : difference < 0 
+            ? 'border-emerald-500/30 bg-gradient-to-br from-emerald-950/30 to-slate-900/30'
+            : 'border-slate-700/30 bg-gradient-to-br from-slate-900/30 to-slate-900/30'
+        } backdrop-blur-xl shadow-2xl rounded-3xl overflow-hidden p-8 transition-all duration-500`}>
+          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6">
+            <div className="space-y-2">
+              <div className="text-xs font-semibold text-slate-400 tracking-[0.15em] uppercase">
+                Разница
               </div>
-            </Card>
-          )}
-        </div>
-
-        <div className="text-center mt-16 animate-in fade-in duration-1000 delay-700">
-          <p className="text-xs text-gray-400 font-light">
-            Данные актуальны на октябрь 2025
-          </p>
-        </div>
+              <div className={`text-5xl font-light tracking-tight ${
+                difference > 0 ? 'text-red-400' : difference < 0 ? 'text-emerald-400' : 'text-slate-400'
+              }`}>
+                {difference > 0 ? '+' : ''}{difference.toLocaleString('ru-RU')} ₽
+              </div>
+            </div>
+            
+            {difference !== 0 && (
+              <div className={`px-6 py-3 rounded-2xl font-medium text-sm ${
+                difference > 0 
+                  ? 'bg-red-500/10 text-red-400 border border-red-500/20' 
+                  : 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20'
+              }`}>
+                {difference > 0 ? 'Налог вырастет' : 'Налог снизится'}
+              </div>
+            )}
+          </div>
+        </Card>
       </div>
     </div>
   );
