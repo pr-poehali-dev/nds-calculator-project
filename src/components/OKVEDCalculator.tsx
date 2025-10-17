@@ -441,61 +441,63 @@ const OKVEDCalculator = () => {
             </div>
           </Card>
 
-          <div className="space-y-6">
-            <Card className="border border-emerald-500/20 bg-gradient-to-br from-emerald-950/40 to-slate-900/40 backdrop-blur-xl shadow-2xl shadow-emerald-500/5 rounded-3xl overflow-hidden p-8">
-              <div className="space-y-6">
-                <div className="flex items-center justify-between">
-                  <span className="text-xs font-semibold text-emerald-400/80 tracking-[0.15em] uppercase">2025</span>
-                  <span className="text-xs font-medium text-emerald-400/60 px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/20">
+          <Card className={`border ${
+            vat2026Rate > vat2025Rate 
+              ? 'border-red-500/30 bg-gradient-to-br from-red-950/30 to-slate-900/30' 
+              : vat2026Rate < vat2025Rate
+              ? 'border-emerald-500/30 bg-gradient-to-br from-emerald-950/30 to-slate-900/30'
+              : 'border-slate-700/30 bg-gradient-to-br from-slate-900/30 to-slate-900/30'
+          } backdrop-blur-xl shadow-2xl rounded-3xl overflow-hidden p-8`}>
+            <div className="space-y-6">
+              <div className="text-xs font-semibold text-slate-400 tracking-[0.15em] uppercase">
+                Сравнение ставок
+              </div>
+              
+              <div className="grid grid-cols-2 gap-6">
+                <div>
+                  <div className="text-sm text-slate-400 mb-3">2025</div>
+                  <div className="text-5xl font-light text-white tracking-tight">
                     {vat2025Rate}%
-                  </span>
+                  </div>
                 </div>
                 
                 <div>
-                  <div className="text-sm text-slate-400 mb-2">Сумма НДС</div>
-                  <div className="text-4xl font-light text-white tracking-tight">
-                    {result2025.vat.toLocaleString('ru-RU')} ₽
-                  </div>
-                </div>
-
-                <div className="h-px bg-gradient-to-r from-transparent via-slate-700/50 to-transparent"></div>
-
-                <div>
-                  <div className="text-sm text-slate-400 mb-2">Итого с НДС</div>
-                  <div className="text-3xl font-light text-emerald-400">
-                    {result2025.total.toLocaleString('ru-RU')} ₽
-                  </div>
-                </div>
-              </div>
-            </Card>
-
-            <Card className="border border-teal-500/20 bg-gradient-to-br from-teal-950/40 to-slate-900/40 backdrop-blur-xl shadow-2xl shadow-teal-500/5 rounded-3xl overflow-hidden p-8">
-              <div className="space-y-6">
-                <div className="flex items-center justify-between">
-                  <span className="text-xs font-semibold text-teal-400/80 tracking-[0.15em] uppercase">2026</span>
-                  <span className="text-xs font-medium text-teal-400/60 px-3 py-1 rounded-full bg-teal-500/10 border border-teal-500/20">
+                  <div className="text-sm text-slate-400 mb-3">2026</div>
+                  <div className={`text-5xl font-light tracking-tight ${
+                    vat2026Rate > vat2025Rate 
+                      ? 'text-red-400' 
+                      : vat2026Rate < vat2025Rate 
+                      ? 'text-emerald-400' 
+                      : 'text-white'
+                  }`}>
                     {vat2026Rate}%
-                  </span>
-                </div>
-                
-                <div>
-                  <div className="text-sm text-slate-400 mb-2">Сумма НДС</div>
-                  <div className="text-4xl font-light text-white tracking-tight">
-                    {result2026.vat.toLocaleString('ru-RU')} ₽
-                  </div>
-                </div>
-
-                <div className="h-px bg-gradient-to-r from-transparent via-slate-700/50 to-transparent"></div>
-
-                <div>
-                  <div className="text-sm text-slate-400 mb-2">Итого с НДС</div>
-                  <div className="text-3xl font-light text-teal-400">
-                    {result2026.total.toLocaleString('ru-RU')} ₽
+                    {vat2026Rate !== vat2025Rate && (
+                      <span className="text-2xl ml-2">
+                        {vat2026Rate > vat2025Rate ? '↑' : '↓'}
+                      </span>
+                    )}
                   </div>
                 </div>
               </div>
-            </Card>
-          </div>
+
+              {vat2026Rate !== vat2025Rate && (
+                <div className={`mt-4 px-4 py-3 rounded-xl ${
+                  vat2026Rate > vat2025Rate
+                    ? 'bg-red-500/10 border border-red-500/20'
+                    : 'bg-emerald-500/10 border border-emerald-500/20'
+                }`}>
+                  <p className={`text-sm font-medium ${
+                    vat2026Rate > vat2025Rate ? 'text-red-400' : 'text-emerald-400'
+                  }`}>
+                    {vat2026Rate > vat2025Rate 
+                      ? `Ставка увеличится на ${vat2026Rate - vat2025Rate}%` 
+                      : `Ставка снизится на ${vat2025Rate - vat2026Rate}%`
+                    }
+                  </p>
+                </div>
+              )}
+            </div>
+          </Card>
         </div>
 
         <Card className={`border ${
