@@ -1,0 +1,13 @@
+{
+  "tests": [{
+    "name": "Get all OKVED",
+    "method": "GET",
+    "path": "/",
+    "expectedStatus": 200,
+    "expectedBody": {
+      "items": "array",
+      "count": "number"
+    },
+    "bodyMatcher": "partial"
+  }]
+}

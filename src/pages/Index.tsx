@@ -1,7 +1,7 @@
-import VATCalculator from '@/components/VATCalculator';
+import OKVEDCalculator from '@/components/OKVEDCalculator';
 
 const Index = () => {
-  return <VATCalculator />;
+  return <OKVEDCalculator />;
 };
 
 export default Index;

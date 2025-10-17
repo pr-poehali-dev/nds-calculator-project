@@ -1,0 +1,12 @@
+{
+  "tests": [{
+    "name": "Load OKVED data",
+    "method": "POST",
+    "path": "/",
+    "expectedStatus": 200,
+    "expectedBody": {
+      "count": 30
+    },
+    "bodyMatcher": "partial"
+  }]
+}
