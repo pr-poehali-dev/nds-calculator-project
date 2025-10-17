@@ -202,20 +202,42 @@ const OKVEDCalculator = () => {
                 </div>
 
                 {taxSystem === 'general' && (
-                  <div className="space-y-4 animate-in fade-in slide-in-from-top-2 duration-300">
-                    <label className="block text-xs font-semibold text-emerald-400/80 tracking-[0.15em] uppercase">
-                      Ставка НДС 2025
-                    </label>
-                    <Select value={String(vatRate2025)} onValueChange={(v) => setVatRate2025(Number(v))}>
-                      <SelectTrigger className="h-14 border border-slate-700/30 bg-slate-800/40 rounded-2xl text-white focus:ring-2 focus:ring-emerald-500/40">
-                        <SelectValue />
-                      </SelectTrigger>
-                      <SelectContent className="bg-slate-900 border-slate-700/50 text-white rounded-xl">
-                        <SelectItem value="0" className="hover:bg-slate-800 cursor-pointer rounded-lg">0%</SelectItem>
-                        <SelectItem value="10" className="hover:bg-slate-800 cursor-pointer rounded-lg">10%</SelectItem>
-                        <SelectItem value="20" className="hover:bg-slate-800 cursor-pointer rounded-lg">20%</SelectItem>
-                      </SelectContent>
-                    </Select>
+                  <div className="space-y-6 animate-in fade-in slide-in-from-top-2 duration-300">
+                    <div className="space-y-4">
+                      <label className="block text-xs font-semibold text-emerald-400/80 tracking-[0.15em] uppercase">
+                        Доход за год (млн ₽)
+                      </label>
+                      <Input
+                        type="number"
+                        value={usnRevenue}
+                        onChange={(e) => setUsnRevenue(Number(e.target.value))}
+                        onInput={(e) => {
+                          const input = e.target as HTMLInputElement;
+                          if (input.value.startsWith('0') && input.value.length > 1) {
+                            input.value = input.value.replace(/^0+/, '');
+                            setUsnRevenue(Number(input.value));
+                          }
+                        }}
+                        placeholder="100"
+                        className="h-14 border border-slate-700/30 bg-slate-800/40 rounded-2xl text-base px-5 text-white placeholder:text-slate-500 focus-visible:ring-2 focus-visible:ring-emerald-500/40 focus-visible:border-emerald-500/40 transition-all duration-300 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+                      />
+                    </div>
+                    
+                    <div className="space-y-4">
+                      <label className="block text-xs font-semibold text-emerald-400/80 tracking-[0.15em] uppercase">
+                        Ставка НДС 2025
+                      </label>
+                      <Select value={String(vatRate2025)} onValueChange={(v) => setVatRate2025(Number(v))}>
+                        <SelectTrigger className="h-14 border border-slate-700/30 bg-slate-800/40 rounded-2xl text-white focus:ring-2 focus:ring-emerald-500/40">
+                          <SelectValue />
+                        </SelectTrigger>
+                        <SelectContent className="bg-slate-900 border-slate-700/50 text-white rounded-xl">
+                          <SelectItem value="0" className="hover:bg-slate-800 cursor-pointer rounded-lg">0%</SelectItem>
+                          <SelectItem value="10" className="hover:bg-slate-800 cursor-pointer rounded-lg">10%</SelectItem>
+                          <SelectItem value="20" className="hover:bg-slate-800 cursor-pointer rounded-lg">20%</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
                   </div>
                 )}
 
