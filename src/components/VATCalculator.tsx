@@ -18,10 +18,13 @@ const VATCalculator = () => {
   const [okvedCode, setOkvedCode] = useState<string>('');
   const [okvedList, setOkvedList] = useState<OKVEDItem[]>([]);
   const [searchQuery, setSearchQuery] = useState<string>('');
-  const [taxSystem, setTaxSystem] = useState<'general' | 'usn'>('general');
+  const [taxSystem, setTaxSystem] = useState<'general' | 'usn' | 'eshn'>('general');
   const [vatRate2025, setVatRate2025] = useState<number>(20);
   const [vatRate2026, setVatRate2026] = useState<number>(22);
   const [usnRevenue, setUsnRevenue] = useState<number>(100);
+  const [generalRevenue, setGeneralRevenue] = useState<number>(10);
+  const [eshnRevenue, setEshnRevenue] = useState<number>(30);
+  const [isExempt, setIsExempt] = useState<boolean>(false);
 
   useEffect(() => {
     const fetchOKVED = async () => {
@@ -53,18 +56,39 @@ const VATCalculator = () => {
 
   useEffect(() => {
     if (taxSystem === 'usn') {
-      if (usnRevenue >= 60 && usnRevenue < 250) {
+      if (usnRevenue < 60) {
+        setIsExempt(true);
+        setVatRate2025(0);
+        setVatRate2026(0);
+      } else if (usnRevenue >= 60 && usnRevenue < 250) {
+        setIsExempt(false);
         setVatRate2025(5);
         setVatRate2026(5);
       } else if (usnRevenue >= 250 && usnRevenue <= 450) {
+        setIsExempt(false);
         setVatRate2025(7);
         setVatRate2026(7);
       } else {
+        setIsExempt(false);
         setVatRate2025(0);
         setVatRate2026(0);
       }
+    } else if (taxSystem === 'eshn') {
+      if (eshnRevenue <= 60) {
+        setIsExempt(true);
+        setVatRate2025(0);
+        setVatRate2026(0);
+      } else {
+        setIsExempt(false);
+      }
+    } else if (taxSystem === 'general') {
+      if (generalRevenue <= 2) {
+        setIsExempt(true);
+      } else {
+        setIsExempt(false);
+      }
     }
-  }, [taxSystem, usnRevenue]);
+  }, [taxSystem, usnRevenue, generalRevenue, eshnRevenue]);
 
   const filteredOKVED = okvedList.filter(item =>
     item.code.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -152,42 +176,62 @@ const VATCalculator = () => {
                 />
               </div>
 
-              <Tabs value={taxSystem} onValueChange={(v) => setTaxSystem(v as 'general' | 'usn')}>
-                <TabsList className="grid w-full grid-cols-2">
-                  <TabsTrigger value="general">Общая система</TabsTrigger>
+              <Tabs value={taxSystem} onValueChange={(v) => setTaxSystem(v as 'general' | 'usn' | 'eshn')}>
+                <TabsList className="grid w-full grid-cols-3">
+                  <TabsTrigger value="general">ОСН</TabsTrigger>
                   <TabsTrigger value="usn">УСН</TabsTrigger>
+                  <TabsTrigger value="eshn">ЕСХН</TabsTrigger>
                 </TabsList>
                 
                 <TabsContent value="general" className="space-y-4 mt-4">
                   <div>
-                    <Label htmlFor="rate2025">Ставка НДС (%)</Label>
-                    <Select 
-                      value={vatRate2025.toString()} 
-                      onValueChange={(v) => {
-                        const rate = parseFloat(v);
-                        setVatRate2025(rate);
-                        if (rate === 20) {
-                          setVatRate2026(22);
-                        } else {
-                          setVatRate2026(rate);
-                        }
-                      }}
-                    >
-                      <SelectTrigger className="mt-2">
-                        <SelectValue />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="0">0% (Экспорт)</SelectItem>
-                        <SelectItem value="10">10% (Продовольствие)</SelectItem>
-                        <SelectItem value="20">20% (Стандартная)</SelectItem>
-                      </SelectContent>
-                    </Select>
-                    <p className="text-sm text-muted-foreground mt-2">
-                      {vatRate2025 === 20 
-                        ? 'В 2026 году ставка изменится на 22%'
-                        : 'Ставка не изменится в 2026 году'}
-                    </p>
+                    <Label htmlFor="generalRevenue">Выручка за 3 месяца (млн ₽)</Label>
+                    <Input
+                      id="generalRevenue"
+                      type="number"
+                      placeholder="Введите выручку"
+                      value={generalRevenue}
+                      onChange={(e) => setGeneralRevenue(parseFloat(e.target.value) || 0)}
+                      className="mt-2"
+                    />
                   </div>
+                  {!isExempt && (
+                    <div>
+                      <Label htmlFor="rate2025">Ставка НДС (%)</Label>
+                      <Select 
+                        value={vatRate2025.toString()} 
+                        onValueChange={(v) => {
+                          const rate = parseFloat(v);
+                          setVatRate2025(rate);
+                          if (rate === 20) {
+                            setVatRate2026(22);
+                          } else {
+                            setVatRate2026(rate);
+                          }
+                        }}
+                      >
+                        <SelectTrigger className="mt-2">
+                          <SelectValue />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="0">0% (Экспорт)</SelectItem>
+                          <SelectItem value="10">10% (Продовольствие)</SelectItem>
+                          <SelectItem value="20">20% (Стандартная)</SelectItem>
+                        </SelectContent>
+                      </Select>
+                      <p className="text-sm text-muted-foreground mt-2">
+                        {vatRate2025 === 20 
+                          ? 'В 2026 году ставка изменится на 22%'
+                          : 'Ставка не изменится в 2026 году'}
+                      </p>
+                    </div>
+                  )}
+                  {isExempt && (
+                    <div className="p-3 bg-green-50 border border-green-200 rounded-lg">
+                      <p className="text-sm text-green-800 font-medium">✓ Освобождение от НДС</p>
+                      <p className="text-xs text-green-700 mt-1">Выручка не превышает 2 млн ₽ за 3 месяца</p>
+                    </div>
+                  )}
                 </TabsContent>
 
                 <TabsContent value="usn" className="space-y-4 mt-4">
@@ -201,13 +245,70 @@ const VATCalculator = () => {
                       onChange={(e) => setUsnRevenue(parseFloat(e.target.value) || 0)}
                       className="mt-2"
                     />
-                    <p className="text-sm text-muted-foreground mt-2">
-                      {usnRevenue >= 60 && usnRevenue < 250 
-                        ? '5% - доход от 60 до 250 млн'
-                        : usnRevenue >= 250 && usnRevenue <= 450
-                        ? '7% - доход от 250 до 450 млн'
-                        : 'Введите доход от 60 до 450 млн'}
-                    </p>
+                    {isExempt ? (
+                      <div className="mt-2 p-3 bg-green-50 border border-green-200 rounded-lg">
+                        <p className="text-sm text-green-800 font-medium">✓ Автоматическое освобождение от НДС</p>
+                        <p className="text-xs text-green-700 mt-1">Доход не превышает 60 млн ₽ в год</p>
+                      </div>
+                    ) : (
+                      <p className="text-sm text-muted-foreground mt-2">
+                        {usnRevenue >= 60 && usnRevenue < 250 
+                          ? '5% - доход от 60 до 250 млн'
+                          : usnRevenue >= 250 && usnRevenue <= 450
+                          ? '7% - доход от 250 до 450 млн'
+                          : 'Доход выше 450 млн - УСН недоступна'}
+                      </p>
+                    )}
+                  </div>
+                </TabsContent>
+
+                <TabsContent value="eshn" className="space-y-4 mt-4">
+                  <div>
+                    <Label htmlFor="eshnRevenue">Годовой доход от реализации (млн ₽)</Label>
+                    <Input
+                      id="eshnRevenue"
+                      type="number"
+                      placeholder="Введите доход"
+                      value={eshnRevenue}
+                      onChange={(e) => setEshnRevenue(parseFloat(e.target.value) || 0)}
+                      className="mt-2"
+                    />
+                    {isExempt ? (
+                      <div className="mt-2 p-3 bg-green-50 border border-green-200 rounded-lg">
+                        <p className="text-sm text-green-800 font-medium">✓ Возможно освобождение от НДС</p>
+                        <p className="text-xs text-green-700 mt-1">Доход не превышает 60 млн ₽. Требуется подать уведомление.</p>
+                      </div>
+                    ) : (
+                      <div className="mt-2">
+                        <Label htmlFor="eshnRate">Ставка НДС (%)</Label>
+                        <Select 
+                          value={vatRate2025.toString()} 
+                          onValueChange={(v) => {
+                            const rate = parseFloat(v);
+                            setVatRate2025(rate);
+                            if (rate === 20) {
+                              setVatRate2026(22);
+                            } else {
+                              setVatRate2026(rate);
+                            }
+                          }}
+                        >
+                          <SelectTrigger className="mt-2">
+                            <SelectValue />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="0">0% (Экспорт)</SelectItem>
+                            <SelectItem value="10">10% (Продовольствие)</SelectItem>
+                            <SelectItem value="20">20% (Стандартная)</SelectItem>
+                          </SelectContent>
+                        </Select>
+                        <p className="text-sm text-muted-foreground mt-2">
+                          {vatRate2025 === 20 
+                            ? 'В 2026 году ставка изменится на 22%'
+                            : 'Ставка не изменится в 2026 году'}
+                        </p>
+                      </div>
+                    )}
                   </div>
                 </TabsContent>
               </Tabs>
@@ -287,12 +388,20 @@ const VATCalculator = () => {
                       <p>• 0% - экспорт товаров и международные перевозки</p>
                       <p>• 10% - продовольственные товары, детские товары, медицина</p>
                       <p>• 20% (2025) / 22% (2026) - стандартная ставка</p>
+                      <p>• Освобождение: выручка ≤ 2 млн ₽ за 3 месяца (требуется уведомление)</p>
                     </>
-                  ) : (
+                  ) : taxSystem === 'usn' ? (
                     <>
+                      <p>• 0% - автоматически при доходе до 60 млн ₽</p>
                       <p>• 5% - при доходе от 60 до 250 млн рублей</p>
                       <p>• 7% - при доходе от 250 до 450 млн рублей</p>
                       <p>• Ставки УСН не изменяются в 2026 году</p>
+                    </>
+                  ) : (
+                    <>
+                      <p>• 0% - при доходе ≤ 60 млн ₽ (требуется уведомление)</p>
+                      <p>• 0% / 10% / 20% (22% с 2026) - при доходе &gt; 60 млн ₽</p>
+                      <p>• ЕСХН - единый сельскохозяйственный налог</p>
                     </>
                   )}
                 </div>
