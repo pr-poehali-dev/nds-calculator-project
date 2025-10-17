@@ -67,17 +67,15 @@ const OKVEDCalculator = () => {
   const getUSNRate2025 = (revenue: number, employees: number): number => {
     if (revenue < 60) return 0;
     if (revenue > 450 || employees > 130) return 0;
-    if (revenue <= 250 && employees <= 100) return 6;
-    if (revenue > 250 && revenue <= 450 && employees > 100 && employees <= 130) return 8;
-    return 0;
+    if (revenue > 250 || employees > 100) return 8;
+    return 6;
   };
 
   const getUSNRate2026 = (revenue: number, employees: number): number => {
     if (revenue < 10) return 0;
     if (revenue > 450 || employees > 130) return 0;
-    if (revenue <= 250 && employees <= 100) return 6;
-    if (revenue > 250 && revenue <= 450 && employees > 100 && employees <= 130) return 8;
-    return 0;
+    if (revenue > 250 || employees > 100) return 8;
+    return 6;
   };
 
   const getVatRate2026 = (rate2025: number) => {
