@@ -10,7 +10,6 @@ interface OKVEDItem {
 }
 
 const OKVEDCalculator = () => {
-  const [amount, setAmount] = useState<string>('100000');
   const [okvedCode, setOkvedCode] = useState<string>('');
   const [okvedList, setOkvedList] = useState<OKVEDItem[]>([]);
   const [searchQuery, setSearchQuery] = useState<string>('');
@@ -88,13 +87,12 @@ const OKVEDCalculator = () => {
     return rate2025 === 20 ? 22 : rate2025;
   };
 
-  const calculateVAT = (baseAmount: number, rate: number) => {
-    const vat = (baseAmount * rate) / 100;
-    const total = baseAmount + vat;
-    return { vat, total };
+  const calculateTax = (revenue: number, rate: number) => {
+    const tax = (revenue * rate) / 100;
+    return { tax, revenue };
   };
-
-  const numAmount = parseFloat(amount) || 0;
+  
+  const revenueInRubles = usnRevenue * 1000000;
   
   const vat2025Rate = taxSystem === 'usn' 
     ? getUSNRate2025(usnRevenue, employeeCount)
@@ -108,9 +106,9 @@ const OKVEDCalculator = () => {
     ? 6
     : getVatRate2026(vat2025Rate);
 
-  const result2025 = calculateVAT(numAmount, vat2025Rate);
-  const result2026 = calculateVAT(numAmount, vat2026Rate);
-  const difference = result2026.total - result2025.total;
+  const result2025 = calculateTax(revenueInRubles, vat2025Rate);
+  const result2026 = calculateTax(revenueInRubles, vat2026Rate);
+  const difference = result2026.tax - result2025.tax;
 
   const filteredOKVED = okvedList.filter(item =>
     item.code.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -508,13 +506,13 @@ const OKVEDCalculator = () => {
                       <span className="text-2xl font-bold text-white">{vat2025Rate}%</span>
                     </div>
                     <div className="flex justify-between items-end">
-                      <span className="text-sm text-slate-400">{getTaxSystemLabel()}</span>
-                      <span className="text-xl font-semibold text-blue-400">{result2025.vat.toLocaleString('ru-RU')} ₽</span>
+                      <span className="text-sm text-slate-400">Доход за год</span>
+                      <span className="text-xl font-semibold text-slate-300">{result2025.revenue.toLocaleString('ru-RU')} ₽</span>
                     </div>
                     <div className="pt-6 border-t border-slate-700/50">
                       <div className="flex justify-between items-end">
-                        <span className="text-sm font-medium text-slate-300">Итого с {getTaxSystemLabel()}</span>
-                        <span className="text-3xl font-bold text-white">{result2025.total.toLocaleString('ru-RU')} ₽</span>
+                        <span className="text-sm font-medium text-slate-300">Размер налога</span>
+                        <span className="text-3xl font-bold text-blue-400">{result2025.tax.toLocaleString('ru-RU')} ₽</span>
                       </div>
                     </div>
                   </div>
@@ -538,13 +536,13 @@ const OKVEDCalculator = () => {
                       <span className="text-2xl font-bold text-white">{vat2026Rate}%</span>
                     </div>
                     <div className="flex justify-between items-end">
-                      <span className="text-sm text-slate-400">{getTaxSystemLabel()}</span>
-                      <span className="text-xl font-semibold text-purple-400">{result2026.vat.toLocaleString('ru-RU')} ₽</span>
+                      <span className="text-sm text-slate-400">Доход за год</span>
+                      <span className="text-xl font-semibold text-slate-300">{result2026.revenue.toLocaleString('ru-RU')} ₽</span>
                     </div>
                     <div className="pt-6 border-t border-slate-700/50">
                       <div className="flex justify-between items-end">
-                        <span className="text-sm font-medium text-slate-300">Итого с {getTaxSystemLabel()}</span>
-                        <span className="text-3xl font-bold text-white">{result2026.total.toLocaleString('ru-RU')} ₽</span>
+                        <span className="text-sm font-medium text-slate-300">Размер налога</span>
+                        <span className="text-3xl font-bold text-purple-400">{result2026.tax.toLocaleString('ru-RU')} ₽</span>
                       </div>
                     </div>
                   </div>
