@@ -495,7 +495,7 @@ const OKVEDCalculator = () => {
                     </div>
                     <div>
                       <h3 className="text-2xl font-semibold text-white">2025</h3>
-                      <p className="text-xs text-slate-500 uppercase tracking-wider">Текущий год</p>
+                      <p className="text-xs text-slate-500 uppercase tracking-wider">{taxSystem === 'psn' ? (hasPatent ? 'С патентом' : 'Без патента') : 'Текущий год'}</p>
                     </div>
                   </div>
                   <div className="space-y-6">
@@ -525,7 +525,7 @@ const OKVEDCalculator = () => {
                     </div>
                     <div>
                       <h3 className="text-2xl font-semibold text-white">2026</h3>
-                      <p className="text-xs text-slate-500 uppercase tracking-wider">Следующий год</p>
+                      <p className="text-xs text-slate-500 uppercase tracking-wider">{taxSystem === 'psn' ? (hasPatent ? 'С патентом' : 'Без патента') : 'Следующий год'}</p>
                     </div>
                   </div>
                   <div className="space-y-6">
