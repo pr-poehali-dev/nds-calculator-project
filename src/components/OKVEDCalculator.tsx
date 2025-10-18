@@ -229,16 +229,6 @@ const OKVEDCalculator = () => {
                 <label className="block text-xs font-semibold text-emerald-400/80 tracking-[0.15em] uppercase">Налоговый режим</label>
                 <div className="flex gap-2 p-1.5 bg-slate-800/40 backdrop-blur-sm rounded-2xl border border-slate-700/30">
                   <button
-                    onClick={() => setTaxSystem('general')}
-                    className={`flex-1 h-11 rounded-xl font-medium text-sm transition-all duration-300 ${
-                      taxSystem === 'general'
-                        ? 'bg-gradient-to-r from-emerald-500 to-teal-500 text-white shadow-lg shadow-emerald-500/20'
-                        : 'text-slate-400 hover:text-slate-300'
-                    }`}
-                  >
-                    ОСНО
-                  </button>
-                  <button
                     onClick={() => setTaxSystem('usn')}
                     className={`flex-1 h-11 rounded-xl font-medium text-sm transition-all duration-300 ${
                       taxSystem === 'usn'
@@ -249,12 +239,14 @@ const OKVEDCalculator = () => {
                     УСН
                   </button>
                   <button
-                    onClick={() => setTaxSystem('psn')}
-                    className={`flex-1 h-11 rounded-xl font-medium text-sm transition-all duration-300 ${
-                      taxSystem === 'psn'
-                        ? 'bg-gradient-to-r from-emerald-500 to-teal-500 text-white shadow-lg shadow-emerald-500/20'
-                        : 'text-slate-400 hover:text-slate-300'
-                    }`}
+                    disabled
+                    className="flex-1 h-11 rounded-xl font-medium text-sm transition-all duration-300 text-slate-600 cursor-not-allowed opacity-50"
+                  >
+                    ОСНО
+                  </button>
+                  <button
+                    disabled
+                    className="flex-1 h-11 rounded-xl font-medium text-sm transition-all duration-300 text-slate-600 cursor-not-allowed opacity-50"
                   >
                     ПСН
                   </button>
