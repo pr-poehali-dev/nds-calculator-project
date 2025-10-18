@@ -614,6 +614,30 @@ const OKVEDCalculator = () => {
                       </div>
                     </div>
                   </Card>
+
+                  <Card className="lg:col-span-2 border border-slate-800/50 bg-gradient-to-br from-slate-900/90 to-slate-900/50 backdrop-blur-xl shadow-2xl rounded-3xl overflow-hidden">
+                    <div className="p-8">
+                      <div className="flex items-center gap-3 mb-6">
+                        <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-amber-500/20 to-amber-600/10 flex items-center justify-center border border-amber-500/30">
+                          <Icon name="Info" className="w-5 h-5 text-amber-400" />
+                        </div>
+                        <div>
+                          <h3 className="text-2xl font-semibold text-white">Экономия с патентом</h3>
+                          <p className="text-xs text-slate-500 uppercase tracking-wider">Выгода от использования патента</p>
+                        </div>
+                      </div>
+                      <div className="text-center py-8">
+                        <div className="text-5xl sm:text-6xl font-bold mb-3">
+                          <span className="text-emerald-400">
+                            {psnWithoutPatent2025.tax.toLocaleString('ru-RU')} ₽
+                          </span>
+                        </div>
+                        <p className="text-sm text-slate-400">
+                          С патентом вы экономите {psnWithoutPatent2025.tax.toLocaleString('ru-RU')} ₽ ежегодно (ставка 0% вместо 6%)
+                        </p>
+                      </div>
+                    </div>
+                  </Card>
                 </>
               ) : (
                 <>
