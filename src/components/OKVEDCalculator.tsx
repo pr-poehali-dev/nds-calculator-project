@@ -488,7 +488,7 @@ const OKVEDCalculator = () => {
             <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/95 backdrop-blur-sm p-4 sm:p-8 animate-in fade-in duration-300">
               <button
                 onClick={handleCloseResults}
-                className="absolute top-4 right-4 sm:top-8 sm:right-8 w-12 h-12 rounded-full bg-slate-800/80 hover:bg-slate-700 border border-slate-700/50 flex items-center justify-center text-slate-400 hover:text-white transition-all duration-200 hover:scale-110"
+                className="absolute top-4 right-4 sm:top-8 sm:right-8 w-12 h-12 rounded-full bg-slate-800/80 hover:bg-slate-700 border border-slate-700/50 flex items-center justify-center text-slate-400 hover:text-white transition-all duration-200 hover:scale-110 z-10"
               >
                 <Icon name="X" size={24} />
               </button>
