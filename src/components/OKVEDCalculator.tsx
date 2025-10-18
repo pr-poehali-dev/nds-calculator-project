@@ -21,6 +21,7 @@ const OKVEDCalculator = () => {
   const [showAdvancedOptions, setShowAdvancedOptions] = useState<boolean>(false);
   const [isCalculating, setIsCalculating] = useState<boolean>(false);
   const [showResults, setShowResults] = useState<boolean>(false);
+  const [hasPatent, setHasPatent] = useState<boolean>(true);
 
   useEffect(() => {
     loadOKVED();
