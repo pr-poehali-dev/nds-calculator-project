@@ -96,18 +96,23 @@ const OKVEDCalculator = () => {
   const vat2025Rate = taxSystem === 'usn' 
     ? getUSNRate2025(usnRevenue, employeeCount)
     : taxSystem === 'psn'
-    ? 6
+    ? (hasPatent ? 0 : 6)
     : vatRate2025;
   
   const vat2026Rate = taxSystem === 'usn'
     ? getUSNRate2026(usnRevenue, employeeCount)
     : taxSystem === 'psn'
-    ? 6
+    ? (hasPatent ? 0 : 6)
     : getVatRate2026(vat2025Rate);
 
   const result2025 = calculateTax(revenueInRubles, vat2025Rate);
   const result2026 = calculateTax(revenueInRubles, vat2026Rate);
   const difference = result2026.tax - result2025.tax;
+  
+  const psnWithPatent2025 = calculateTax(revenueInRubles, 0);
+  const psnWithPatent2026 = calculateTax(revenueInRubles, 0);
+  const psnWithoutPatent2025 = calculateTax(revenueInRubles, 6);
+  const psnWithoutPatent2026 = calculateTax(revenueInRubles, 6);
 
   const filteredOKVED = okvedList.filter(item =>
     item.code.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -487,68 +492,195 @@ const OKVEDCalculator = () => {
               >
                 <Icon name="X" size={24} />
               </button>
-              <div className="w-full max-w-5xl grid grid-cols-1 lg:grid-cols-2 gap-6 overflow-y-auto max-h-full">
-              <Card className="border border-slate-800/50 bg-gradient-to-br from-slate-900/90 to-slate-900/50 backdrop-blur-xl shadow-2xl rounded-3xl overflow-hidden animate-in fade-in-50 slide-in-from-bottom-4 duration-700 delay-100">
-                <div className="p-8">
-                  <div className="flex items-center gap-3 mb-8">
-                    <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-blue-500/20 to-blue-600/10 flex items-center justify-center border border-blue-500/30">
-                      <Icon name="Calendar" className="w-5 h-5 text-blue-400" />
-                    </div>
-                    <div>
-                      <h3 className="text-2xl font-semibold text-white">2025</h3>
-                      <p className="text-xs text-slate-500 uppercase tracking-wider">{taxSystem === 'psn' ? (hasPatent ? 'С патентом' : 'Без патента') : 'Текущий год'}</p>
-                    </div>
-                  </div>
-                  <div className="space-y-6">
-                    <div className="flex justify-between items-end">
-                      <span className="text-sm text-slate-400">Ставка {getTaxSystemLabel()}</span>
-                      <span className="text-2xl font-bold text-white">{vat2025Rate}%</span>
-                    </div>
-                    <div className="flex justify-between items-end">
-                      <span className="text-sm text-slate-400">Доход за год</span>
-                      <span className="text-xl font-semibold text-slate-300">{result2025.revenue.toLocaleString('ru-RU')} ₽</span>
-                    </div>
-                    <div className="pt-6 border-t border-slate-700/50">
-                      <div className="flex justify-between items-end">
-                        <span className="text-sm font-medium text-slate-300">Размер налога</span>
-                        <span className="text-3xl font-bold text-blue-400">{result2025.tax.toLocaleString('ru-RU')} ₽</span>
+              <div className={`w-full max-w-5xl grid grid-cols-1 ${taxSystem === 'psn' ? 'lg:grid-cols-2' : 'lg:grid-cols-2'} gap-6 overflow-y-auto max-h-full`}>
+              {taxSystem === 'psn' ? (
+                <>
+                  <Card className="border border-slate-800/50 bg-gradient-to-br from-slate-900/90 to-slate-900/50 backdrop-blur-xl shadow-2xl rounded-3xl overflow-hidden">
+                    <div className="p-8">
+                      <div className="flex items-center gap-3 mb-8">
+                        <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-emerald-500/20 to-emerald-600/10 flex items-center justify-center border border-emerald-500/30">
+                          <Icon name="CheckCircle" className="w-5 h-5 text-emerald-400" />
+                        </div>
+                        <div>
+                          <h3 className="text-2xl font-semibold text-white">2025 с патентом</h3>
+                          <p className="text-xs text-slate-500 uppercase tracking-wider">Налоговая льгота</p>
+                        </div>
+                      </div>
+                      <div className="space-y-6">
+                        <div className="flex justify-between items-end">
+                          <span className="text-sm text-slate-400">Ставка ПСН</span>
+                          <span className="text-2xl font-bold text-white">0%</span>
+                        </div>
+                        <div className="flex justify-between items-end">
+                          <span className="text-sm text-slate-400">Доход за год</span>
+                          <span className="text-xl font-semibold text-slate-300">{psnWithPatent2025.revenue.toLocaleString('ru-RU')} ₽</span>
+                        </div>
+                        <div className="pt-6 border-t border-slate-700/50">
+                          <div className="flex justify-between items-end">
+                            <span className="text-sm font-medium text-slate-300">Размер налога</span>
+                            <span className="text-3xl font-bold text-emerald-400">0 ₽</span>
+                          </div>
+                        </div>
                       </div>
                     </div>
-                  </div>
-                </div>
-              </Card>
+                  </Card>
 
-              <Card className="border border-slate-800/50 bg-gradient-to-br from-slate-900/90 to-slate-900/50 backdrop-blur-xl shadow-2xl rounded-3xl overflow-hidden animate-in fade-in-50 slide-in-from-bottom-4 duration-700 delay-200">
-                <div className="p-8">
-                  <div className="flex items-center gap-3 mb-8">
-                    <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-purple-500/20 to-purple-600/10 flex items-center justify-center border border-purple-500/30">
-                      <Icon name="TrendingUp" className="w-5 h-5 text-purple-400" />
-                    </div>
-                    <div>
-                      <h3 className="text-2xl font-semibold text-white">2026</h3>
-                      <p className="text-xs text-slate-500 uppercase tracking-wider">{taxSystem === 'psn' ? (hasPatent ? 'С патентом' : 'Без патента') : 'Следующий год'}</p>
-                    </div>
-                  </div>
-                  <div className="space-y-6">
-                    <div className="flex justify-between items-end">
-                      <span className="text-sm text-slate-400">Ставка {getTaxSystemLabel()}</span>
-                      <span className="text-2xl font-bold text-white">{vat2026Rate}%</span>
-                    </div>
-                    <div className="flex justify-between items-end">
-                      <span className="text-sm text-slate-400">Доход за год</span>
-                      <span className="text-xl font-semibold text-slate-300">{result2026.revenue.toLocaleString('ru-RU')} ₽</span>
-                    </div>
-                    <div className="pt-6 border-t border-slate-700/50">
-                      <div className="flex justify-between items-end">
-                        <span className="text-sm font-medium text-slate-300">Размер налога</span>
-                        <span className="text-3xl font-bold text-purple-400">{result2026.tax.toLocaleString('ru-RU')} ₽</span>
+                  <Card className="border border-slate-800/50 bg-gradient-to-br from-slate-900/90 to-slate-900/50 backdrop-blur-xl shadow-2xl rounded-3xl overflow-hidden">
+                    <div className="p-8">
+                      <div className="flex items-center gap-3 mb-8">
+                        <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-rose-500/20 to-rose-600/10 flex items-center justify-center border border-rose-500/30">
+                          <Icon name="XCircle" className="w-5 h-5 text-rose-400" />
+                        </div>
+                        <div>
+                          <h3 className="text-2xl font-semibold text-white">2025 без патента</h3>
+                          <p className="text-xs text-slate-500 uppercase tracking-wider">Стандартная ставка</p>
+                        </div>
+                      </div>
+                      <div className="space-y-6">
+                        <div className="flex justify-between items-end">
+                          <span className="text-sm text-slate-400">Ставка ПСН</span>
+                          <span className="text-2xl font-bold text-white">6%</span>
+                        </div>
+                        <div className="flex justify-between items-end">
+                          <span className="text-sm text-slate-400">Доход за год</span>
+                          <span className="text-xl font-semibold text-slate-300">{psnWithoutPatent2025.revenue.toLocaleString('ru-RU')} ₽</span>
+                        </div>
+                        <div className="pt-6 border-t border-slate-700/50">
+                          <div className="flex justify-between items-end">
+                            <span className="text-sm font-medium text-slate-300">Размер налога</span>
+                            <span className="text-3xl font-bold text-rose-400">{psnWithoutPatent2025.tax.toLocaleString('ru-RU')} ₽</span>
+                          </div>
+                        </div>
                       </div>
                     </div>
-                  </div>
-                </div>
-              </Card>
+                  </Card>
 
-              <Card className="lg:col-span-2 border border-slate-800/50 bg-gradient-to-br from-slate-900/90 to-slate-900/50 backdrop-blur-xl shadow-2xl rounded-3xl overflow-hidden animate-in fade-in-50 slide-in-from-bottom-4 duration-700 delay-300">
+                  <Card className="border border-slate-800/50 bg-gradient-to-br from-slate-900/90 to-slate-900/50 backdrop-blur-xl shadow-2xl rounded-3xl overflow-hidden">
+                    <div className="p-8">
+                      <div className="flex items-center gap-3 mb-8">
+                        <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-emerald-500/20 to-emerald-600/10 flex items-center justify-center border border-emerald-500/30">
+                          <Icon name="CheckCircle" className="w-5 h-5 text-emerald-400" />
+                        </div>
+                        <div>
+                          <h3 className="text-2xl font-semibold text-white">2026 с патентом</h3>
+                          <p className="text-xs text-slate-500 uppercase tracking-wider">Налоговая льгота</p>
+                        </div>
+                      </div>
+                      <div className="space-y-6">
+                        <div className="flex justify-between items-end">
+                          <span className="text-sm text-slate-400">Ставка ПСН</span>
+                          <span className="text-2xl font-bold text-white">0%</span>
+                        </div>
+                        <div className="flex justify-between items-end">
+                          <span className="text-sm text-slate-400">Доход за год</span>
+                          <span className="text-xl font-semibold text-slate-300">{psnWithPatent2026.revenue.toLocaleString('ru-RU')} ₽</span>
+                        </div>
+                        <div className="pt-6 border-t border-slate-700/50">
+                          <div className="flex justify-between items-end">
+                            <span className="text-sm font-medium text-slate-300">Размер налога</span>
+                            <span className="text-3xl font-bold text-emerald-400">0 ₽</span>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </Card>
+
+                  <Card className="border border-slate-800/50 bg-gradient-to-br from-slate-900/90 to-slate-900/50 backdrop-blur-xl shadow-2xl rounded-3xl overflow-hidden">
+                    <div className="p-8">
+                      <div className="flex items-center gap-3 mb-8">
+                        <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-rose-500/20 to-rose-600/10 flex items-center justify-center border border-rose-500/30">
+                          <Icon name="XCircle" className="w-5 h-5 text-rose-400" />
+                        </div>
+                        <div>
+                          <h3 className="text-2xl font-semibold text-white">2026 без патента</h3>
+                          <p className="text-xs text-slate-500 uppercase tracking-wider">Стандартная ставка</p>
+                        </div>
+                      </div>
+                      <div className="space-y-6">
+                        <div className="flex justify-between items-end">
+                          <span className="text-sm text-slate-400">Ставка ПСН</span>
+                          <span className="text-2xl font-bold text-white">6%</span>
+                        </div>
+                        <div className="flex justify-between items-end">
+                          <span className="text-sm text-slate-400">Доход за год</span>
+                          <span className="text-xl font-semibold text-slate-300">{psnWithoutPatent2026.revenue.toLocaleString('ru-RU')} ₽</span>
+                        </div>
+                        <div className="pt-6 border-t border-slate-700/50">
+                          <div className="flex justify-between items-end">
+                            <span className="text-sm font-medium text-slate-300">Размер налога</span>
+                            <span className="text-3xl font-bold text-rose-400">{psnWithoutPatent2026.tax.toLocaleString('ru-RU')} ₽</span>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </Card>
+                </>
+              ) : (
+                <>
+                  <Card className="border border-slate-800/50 bg-gradient-to-br from-slate-900/90 to-slate-900/50 backdrop-blur-xl shadow-2xl rounded-3xl overflow-hidden animate-in fade-in-50 slide-in-from-bottom-4 duration-700 delay-100">
+                    <div className="p-8">
+                      <div className="flex items-center gap-3 mb-8">
+                        <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-blue-500/20 to-blue-600/10 flex items-center justify-center border border-blue-500/30">
+                          <Icon name="Calendar" className="w-5 h-5 text-blue-400" />
+                        </div>
+                        <div>
+                          <h3 className="text-2xl font-semibold text-white">2025</h3>
+                          <p className="text-xs text-slate-500 uppercase tracking-wider">Текущий год</p>
+                        </div>
+                      </div>
+                      <div className="space-y-6">
+                        <div className="flex justify-between items-end">
+                          <span className="text-sm text-slate-400">Ставка {getTaxSystemLabel()}</span>
+                          <span className="text-2xl font-bold text-white">{vat2025Rate}%</span>
+                        </div>
+                        <div className="flex justify-between items-end">
+                          <span className="text-sm text-slate-400">Доход за год</span>
+                          <span className="text-xl font-semibold text-slate-300">{result2025.revenue.toLocaleString('ru-RU')} ₽</span>
+                        </div>
+                        <div className="pt-6 border-t border-slate-700/50">
+                          <div className="flex justify-between items-end">
+                            <span className="text-sm font-medium text-slate-300">Размер налога</span>
+                            <span className="text-3xl font-bold text-blue-400">{result2025.tax.toLocaleString('ru-RU')} ₽</span>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </Card>
+
+                  <Card className="border border-slate-800/50 bg-gradient-to-br from-slate-900/90 to-slate-900/50 backdrop-blur-xl shadow-2xl rounded-3xl overflow-hidden animate-in fade-in-50 slide-in-from-bottom-4 duration-700 delay-200">
+                    <div className="p-8">
+                      <div className="flex items-center gap-3 mb-8">
+                        <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-purple-500/20 to-purple-600/10 flex items-center justify-center border border-purple-500/30">
+                          <Icon name="TrendingUp" className="w-5 h-5 text-purple-400" />
+                        </div>
+                        <div>
+                          <h3 className="text-2xl font-semibold text-white">2026</h3>
+                          <p className="text-xs text-slate-500 uppercase tracking-wider">Следующий год</p>
+                        </div>
+                      </div>
+                      <div className="space-y-6">
+                        <div className="flex justify-between items-end">
+                          <span className="text-sm text-slate-400">Ставка {getTaxSystemLabel()}</span>
+                          <span className="text-2xl font-bold text-white">{vat2026Rate}%</span>
+                        </div>
+                        <div className="flex justify-between items-end">
+                          <span className="text-sm text-slate-400">Доход за год</span>
+                          <span className="text-xl font-semibold text-slate-300">{result2026.revenue.toLocaleString('ru-RU')} ₽</span>
+                        </div>
+                        <div className="pt-6 border-t border-slate-700/50">
+                          <div className="flex justify-between items-end">
+                            <span className="text-sm font-medium text-slate-300">Размер налога</span>
+                            <span className="text-3xl font-bold text-purple-400">{result2026.tax.toLocaleString('ru-RU')} ₽</span>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </Card>
+                </>
+              )}
+
+              {taxSystem !== 'psn' && (
+                  <Card className="lg:col-span-2 border border-slate-800/50 bg-gradient-to-br from-slate-900/90 to-slate-900/50 backdrop-blur-xl shadow-2xl rounded-3xl overflow-hidden animate-in fade-in-50 slide-in-from-bottom-4 duration-700 delay-300">
                 <div className="p-8">
                   <div className="flex items-center gap-3 mb-6">
                     <div className={`w-12 h-12 rounded-2xl bg-gradient-to-br ${difference > 0 ? 'from-rose-500/20 to-rose-600/10 border-rose-500/30' : 'from-emerald-500/20 to-emerald-600/10 border-emerald-500/30'} flex items-center justify-center border`}>
