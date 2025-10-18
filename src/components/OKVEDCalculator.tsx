@@ -708,6 +708,7 @@ const OKVEDCalculator = () => {
                   </div>
                 </div>
               </Card>
+              )}
               </div>
             </div>
           )}
